@@ -35,6 +35,7 @@ class Splitwise():
 
 
     def run(self):
+        
         while 1:
 
             # case when user wants to login
@@ -92,6 +93,8 @@ class Splitwise():
                 else:
                     self.state = x
                 continue
+
+
             # TODOs:
             # display user balance
             # display groupsthat user is in
