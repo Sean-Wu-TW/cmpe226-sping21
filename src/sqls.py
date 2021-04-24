@@ -42,7 +42,6 @@ def insertNewUser(email, name, password, timezone=None, currency=None, lang=None
 
 
 
-
 def returnAllUsers():
     mydb = mysql.connector.connect(
       host=hostname,
@@ -59,3 +58,21 @@ def returnAllUsers():
     for x in mycursor:
       res.append(x)
     return res
+
+
+
+def invitations(whoami):
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT DISTINCT * FROM group_invite WHERE email = '{}'".format(str(whoami)))
+    res = []
+    for x in mycursor:
+      res.append(x)
+    return res
+
+
