@@ -1,16 +1,26 @@
 from sqls import *
 
 class UserInfo():
-    def __init__(self, email, name, userid, timezone, currency, lang, avatar):
+    def __init__(self):
         self.credentials = {
-            'email': email,
-            'name': name,
-            'userid': userid,
-            'timezone': timezone,
-            'currency': currency,
-            'lang': lang,
-            'avatar': avatar
+            'email': "",
+            'name': "",
+            'userid': "",
+            'timezone': "America/Los_Angeles",
+            'currency': "USD",
+            'lang': "English",
+            'avatar': "https://avatar-bucket-splitwise.s3.us-west-1.amazonaws.com/1616181139user-icon.png",
+            'admin': []
         }
+    def userBuilder(self, key, value):
+        ''' Builds the user info '''
+        self.credentials[key] = value
+        return self
+
+    def Print(self):
+        print(self.credentials)
+
+
 
 
 class Splitwise():
@@ -20,7 +30,8 @@ class Splitwise():
     def __init__(self):
         self.user = None
         self.state = 'login'
-        self.help = 'login \ntest \ninvites \nsign-up \nexit'
+        self.help = 'login \ntest(fetches all users)\
+         \ninvites \nsign-up \nexit'
 
     def stateChanger(self, x):
         if x == 'exit':
@@ -35,6 +46,12 @@ class Splitwise():
             self.state = 'invites'
         return
 
+    def nextStateOpt(self):
+        print('======')
+        print(self.help)
+        x = input("what's next?")
+        self.stateChanger(x)
+
 
 
     def run(self):
@@ -44,21 +61,24 @@ class Splitwise():
             # Login
             if self.state == 'login':
                 x = input('Please log in:')
+
+
+
+
                 print('logged in as default user')
-                print('1@user.com','user1','12345','21','America/Los_Angeles','USD','English',
+                print('1@user.com','user1','21','America/Los_Angeles','USD','English',
+                    'https://avatar-bucket-splitwise.s3.us-west-1.amazonaws.com/1616181139user-icon.png')
+                self.user = UserInfo('1@user.com','user1','21','America/Los_Angeles','USD','English',
                     'https://avatar-bucket-splitwise.s3.us-west-1.amazonaws.com/1616181139user-icon.png')
 
-                print('======')
-                print(self.help)
-                x = input("what's next?")
-                self.stateChanger(x)
+                self.nextStateOpt()
                 continue
 
             # Sign up
             if self.state == 'sign-up':
                 email = input('Please enter email address (required) \n')
-                if not self.validate(email, 'email'):
-                    continue
+                # if not self.validate(email, 'email'):
+                #     continue
                 name = input('Please enter your name (required)\n')
                 password = input('Please enter password (required)\n')
                 lang = input('Please enter preferred language (English)\n')
@@ -76,6 +96,11 @@ class Splitwise():
                 print('timezone:',timezone)
                 print('Processing your data...')
                 #####################
+                if lang == "": lang = None
+                if avatar == "": avatar = None
+                if currency == "": currency = None
+                if timezone == "": timezone = None
+
 
                 # if user exists: login
                 valid = True
@@ -92,10 +117,7 @@ class Splitwise():
                     continue
                 else:
                     print('insert failed')
-                    print('======')
-                    print(self.help)
-                    x = input("what's next?")
-                    self.stateChanger(x)
+                    self.nextStateOpt()
                     continue
 
 
@@ -103,10 +125,7 @@ class Splitwise():
             if self.state == 'test':
                 print("Fetching users...")
                 print(returnAllUsers())
-                print('======')
-                print(self.help)
-                x = input("what's next?")
-                self.stateChanger(x)
+                self.nextStateOpt()
                 continue
 
 
@@ -117,10 +136,7 @@ class Splitwise():
                 print("2. Quit from a group")
                 print("3. See group info")
                 print("test - admin tool")
-                print('======')
-                print(self.help)
-                x = input("what's next?")
-                self.stateChanger(x)
+                self.nextStateOpt()
                 continue
 
 
@@ -132,13 +148,15 @@ class Splitwise():
 
             # view invitations
             if self.state == 'invites':
-                res = invitations(self.credentials.email)
-                print(res)
-                print('======')
-                print(self.help)
-                x = input("what's next?")
-                self.stateChanger(x)
-                continue
+                res = invitations(self.user.credentials.get('email'))
+                if res:
+                    print(res)
+                    self.nextStateOpt()
+                    continue
+                else:
+                    print('You have no pending invitations.')
+                    self.nextStateOpt()
+                    continue
 
 
 
