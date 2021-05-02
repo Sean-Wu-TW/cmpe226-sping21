@@ -4,6 +4,7 @@ password = '19950808'
 database = 'splitwise'
 
 import mysql.connector
+import hashlib
 
 mydb = mysql.connector.connect(
   host=hostname,
@@ -31,8 +32,10 @@ def insertNewUser(email, name, password, timezone=None, currency=None, lang=None
 
     mycursor = mydb.cursor()
 
+
+    encodedPassword = hashlib.sha256(password.encode())
     sql = "INSERT INTO user (email, name, password, timezone, currency, lang, avatar) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    val = (email, name, password, timezone, currency, lang, avatar)
+    val = (email, name, encodedPassword.hexdigest(), timezone, currency, lang, avatar)
 
     mycursor.execute(sql, val)
 
