@@ -4,6 +4,7 @@ password = '19950808'
 database = 'splitwise'
 
 import mysql.connector
+import hashlib
 
 mydb = mysql.connector.connect(
   host=hostname,
@@ -31,15 +32,16 @@ def insertNewUser(email, name, password, timezone=None, currency=None, lang=None
 
     mycursor = mydb.cursor()
 
+
+    encodedPassword = hashlib.sha256(password.encode())
     sql = "INSERT INTO user (email, name, password, timezone, currency, lang, avatar) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    val = (email, name, password, timezone, currency, lang, avatar)
+    val = (email, name, encodedPassword.hexdigest(), timezone, currency, lang, avatar)
 
     mycursor.execute(sql, val)
 
     mydb.commit()
 
     print(mycursor.rowcount, "record inserted.")
-
 
 
 
@@ -59,3 +61,21 @@ def returnAllUsers():
     for x in mycursor:
       res.append(x)
     return res
+
+
+
+def invitations(whoami):
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT DISTINCT * FROM group_invite WHERE email = '{}'".format(str(whoami)))
+    res = []
+    for x in mycursor:
+      res.append(x)
+    return res
+
+
