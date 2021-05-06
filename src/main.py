@@ -46,34 +46,28 @@ class Splitwise():
 
     def __init__(self):
         self.user = None
-        self.state = 'login'
+        self.state = 'welcome'
         self.help = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
         'groups']
+        self.stateLookup = {
+            'exit':'login', 
+            'test': 'test',
+            'login':'login',
+            'sign-up':'sign-up',
+            'invites':'invites',
+            'dash':'dash',
+            'info':'info',
+            'groups':'groups',
+            'leave-group':'leave-group',
+            'add-to-group':'add-to-group',
+            'logout':'welcome'
+        }
 
     def stateChanger(self, x):
-        if x == 'exit':
-            self.state = 'login'
-        elif x == 'test':
-            self.state = 'test'
-        elif x == 'login':
-            self.state = 'login'
-        elif x == 'sign-up':
-            self.state = 'sign-up'
-        elif x == 'invites':
-            self.state = 'invites'
-        elif x == 'dash':
-            self.state = 'dash'
-        elif x == 'info':
-            self.state = 'info'
-        elif x == 'groups':
-            self.state = 'groups'
-        elif x == 'leave-group':
-            self.state = 'leave-group'
+        nextState = self.stateLookup.get(x)
+        if nextState:
+            self.state = nextState
 
-
-        elif x == 'add-to-group':
-            self.state = 'add-to-group'
-        return
 
     def nextStateOpt(self):
         print('======')
@@ -83,11 +77,22 @@ class Splitwise():
             x = input("what's next? \n")
         self.stateChanger(x)
 
+    
+
 
 
     def run(self):
         
         while 1:
+
+            # welcome
+            if self.state == 'welcome':
+                print('*************************************************')
+                print("************** Welcome to Splitwise *************")
+                print('*************************************************')
+                x = input('login or sign-up?\n')
+                self.stateChanger(x)
+                continue
 
             # Login
             if self.state == 'login':
@@ -151,7 +156,7 @@ class Splitwise():
                 valid = True
                 allUsers = returnAllUsers()
 
-                if confirmPassword != password:
+                if confirmPassword != password or not email or not password or not name:
                     print('Password incorrent.')
                     valid = False
 
