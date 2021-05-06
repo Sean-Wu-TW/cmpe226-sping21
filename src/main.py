@@ -27,13 +27,13 @@ class UserInfo():
 
 class Splitwise():
     
-    '''states: login, sign-up, test, dash'''
+    '''states: login, sign-up, test, dash, invites, dash, info, groups'''
 
     def __init__(self):
         self.user = None
         self.state = 'login'
-        self.help = 'login \ntest(fetches all users)\
-         \ninvites \nsign-up \nexit \ndash \ninfo'
+        self.help = 'login    test(fetches all users)\
+         \ninvites   sign-up \nexit \t\t\t\t \ndash   info'
 
     def stateChanger(self, x):
         if x == 'exit':
@@ -50,12 +50,17 @@ class Splitwise():
             self.state = 'dash'
         elif x == 'info':
             self.state = 'info'
+        elif x == 'groups':
+            self.state = 'groups'
         return
 
     def nextStateOpt(self):
         print('======')
-        print(self.help)
-        x = input("what's next?")
+        # print(self.help)
+        x = input("what's next? \n")
+        while x == 'help':
+            print(self.help)
+            x = input("what's next? \n")
         self.stateChanger(x)
 
 
@@ -75,20 +80,28 @@ class Splitwise():
                 print('1@user.com','user1','21','America/Los_Angeles','USD','English',
                     'https://avatar-bucket-splitwise.s3.us-west-1.amazonaws.com/1616181139user-icon.png')
                 self.user = UserInfo()
-
-                self.nextStateOpt()
+                self.state = 'info'
                 continue
 
+            # This is what the user logs in sees, his/her debts
             if self.state == 'info':
+                print('*************************************************')
                 print("****** Displaying your account information ******")
+                print('*************************************************')
                 print(self.user.info())
+                res = returnDebts(self.user.credentials.get('userid'))
+                if res:
+                    print('Your debts:\n')
+                    print(res)
                 self.nextStateOpt()
                 continue
 
 
-            # Sign up
+            #### Sign up ###
             if self.state == 'sign-up':
-                print("****** Sign up ******")
+                print('*************************************************')
+                print("******************* Sign up *********************")
+                print('*************************************************')
                 email = input('Please enter email address (required) \n')
                 # if not self.validate(email, 'email'):
                 #     continue
@@ -132,12 +145,14 @@ class Splitwise():
                     print('insert failed')
                     self.nextStateOpt()
                     continue
+            ##### End Sign up #####
 
 
-            # admin testing tool
+            # admin testing tool, returns all users
             if self.state == 'test':
-
-                print("****** Fetching users ******")
+                print('*************************************************')
+                print("**************** Fetching users *****************")
+                print('*************************************************')
                 print(returnAllUsers())
                 self.nextStateOpt()
                 continue
@@ -145,7 +160,9 @@ class Splitwise():
 
             # case when user logins into the dashboard
             if self.state == 'dash':
-                print("****** Dashbaord ******")
+                print('*************************************************')
+                print("****************** Dashbaord ********************")
+                print('*************************************************')
                 print("What do you want to do?")
                 print("1. Add group")
                 print("2. Quit from a group")
@@ -164,7 +181,9 @@ class Splitwise():
 
             # view invitations
             if self.state == 'invites':
-                print("****** Invitations ******")
+                print('*************************************************')
+                print("***************** Invitations *******************")
+                print('*************************************************')
                 res = invitations(self.user.credentials.get('email'))
                 if res:
                     print(res)
@@ -175,7 +194,19 @@ class Splitwise():
                     self.nextStateOpt()
                     continue
 
+            ### End invites
 
+
+            # See groups I'm in
+            if self.state == 'groups':
+                print('*************************************************')
+                print("************ Groups that you're in **************")
+                print('*************************************************')
+
+                res = groupList(self.user.credentials.get('userid'))
+                print(res)
+                self.nextStateOpt()
+                continue
 
             else:
                 return

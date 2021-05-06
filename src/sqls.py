@@ -28,7 +28,7 @@ mydb = mysql.connector.connect(
 
 
 def insertNewUser(email, name, password, timezone=None, currency=None, lang=None, avatar=None):
-
+    ''' For sign-up purposes '''
 
     mycursor = mydb.cursor()
 
@@ -52,10 +52,7 @@ def returnAllUsers():
       password=password,
       database=database
     )
-
     mycursor = mydb.cursor()
-
-
     mycursor.execute("SELECT * FROM user")
     res = []
     for x in mycursor:
@@ -65,6 +62,7 @@ def returnAllUsers():
 
 
 def invitations(whoami):
+    ''' View active invitations from the invite table '''
     mydb = mysql.connector.connect(
       host=hostname,
       user=username,
@@ -77,5 +75,42 @@ def invitations(whoami):
     for x in mycursor:
       res.append(x)
     return res
+
+
+
+def returnDebts(whoami):
+    ''' Returns the debts that are invloved with me '''
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT DISTINCT * FROM debt WHERE user1 = '{}'".format(str(whoami)))
+    res = []
+    for x in mycursor:
+      res.append(x)
+    return res
+
+
+
+def groupList(whoami):
+    ''' This function returns the groups that I am currently in '''
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
+    mycursor = mydb.cursor()
+
+    ### For some reason 'groups' is a reserved word in mysql..., so have to use backtick ` to avoid it
+    mycursor.execute("SELECT DISTINCT * FROM groups_users NATURAL JOIN `groups` WHERE user_id = '{}'".format(str(whoami)))
+    res = []
+    for x in mycursor:
+      res.append(x)
+    return res
+
 
 
