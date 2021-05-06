@@ -1,4 +1,21 @@
 from sqls import *
+import readline
+
+## Tab completer
+def completer(text, state):
+    commands = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
+    'groups']
+
+    options = [i for i in commands if i.startswith(text)]
+    if state < len(options):
+        return options[state]
+    else:
+        return None
+
+readline.parse_and_bind("tab: complete")
+readline.set_completer(completer)
+
+
 
 class UserInfo():
 
@@ -23,45 +40,44 @@ class UserInfo():
         # output groups that your are currently in
 
 
-
-
 class Splitwise():
     
     '''states: login, sign-up, test, dash, invites, dash, info, groups'''
 
     def __init__(self):
         self.user = None
-        self.state = 'login'
-        self.help = 'login    test(fetches all users)\
-         \ninvites   sign-up \nexit \t\t\t\t \ndash   info'
+        self.state = 'welcome'
+        self.help = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
+        'groups']
+        self.stateLookup = {
+            'exit':'login', 
+            'test': 'test',
+            'login':'login',
+            'sign-up':'sign-up',
+            'invites':'invites',
+            'dash':'dash',
+            'info':'info',
+            'groups':'groups',
+            'leave-group':'leave-group',
+            'add-to-group':'add-to-group',
+            'logout':'welcome'
+        }
 
     def stateChanger(self, x):
-        if x == 'exit':
-            self.state = 'login'
-        elif x == 'test':
-            self.state = 'test'
-        elif x == 'login':
-            self.state = 'login'
-        elif x == 'sign-up':
-            self.state = 'sign-up'
-        elif x == 'invites':
-            self.state = 'invites'
-        elif x == 'dash':
-            self.state = 'dash'
-        elif x == 'info':
-            self.state = 'info'
-        elif x == 'groups':
-            self.state = 'groups'
-        return
+        nextState = self.stateLookup.get(x)
+        if nextState:
+            self.state = nextState
+
 
     def nextStateOpt(self):
         print('======')
-        # print(self.help)
         x = input("what's next? \n")
         while x == 'help':
             print(self.help)
             x = input("what's next? \n")
         self.stateChanger(x)
+
+    
 
 
 
@@ -69,19 +85,26 @@ class Splitwise():
         
         while 1:
 
+            # welcome
+            if self.state == 'welcome':
+                print('*************************************************')
+                print("************** Welcome to Splitwise *************")
+                print('*************************************************')
+                x = input('login or sign-up?\n')
+                self.stateChanger(x)
+                continue
+
             # Login
             if self.state == 'login':
-                x = input('Please log in:')
-
-
-
-
-                print('logged in as default user')
-                print('1@user.com','user1','21','America/Los_Angeles','USD','English',
-                    'https://avatar-bucket-splitwise.s3.us-west-1.amazonaws.com/1616181139user-icon.png')
-                self.user = UserInfo()
-                self.state = 'info'
-                continue
+                email = input('Please log in (email):')
+                passw = input('Please log in (password):')
+                if not email and not passw:
+                    print('logged in as default user')
+                    print('1@user.com','user1','21','America/Los_Angeles','USD','English',
+                        'https://avatar-bucket-splitwise.s3.us-west-1.amazonaws.com/1616181139user-icon.png')
+                    self.user = UserInfo()
+                    self.state = 'info'
+                    continue
 
             # This is what the user logs in sees, his/her debts
             if self.state == 'info':
@@ -91,8 +114,10 @@ class Splitwise():
                 print(self.user.info())
                 res = returnDebts(self.user.credentials.get('userid'))
                 if res:
-                    print('Your debts:\n')
+                    print('*************** Your debts: ***************\n')
                     print(res)
+                groups = groupList(self.user.credentials.get('userid'))
+                print(groups)
                 self.nextStateOpt()
                 continue
 
@@ -103,10 +128,9 @@ class Splitwise():
                 print("******************* Sign up *********************")
                 print('*************************************************')
                 email = input('Please enter email address (required) \n')
-                # if not self.validate(email, 'email'):
-                #     continue
                 name = input('Please enter your name (required)\n')
                 password = input('Please enter password (required)\n')
+                confirmPassword = input('Please confirm password (required)\n')
                 lang = input('Please enter preferred language (English)\n')
                 avatar = input('Please enter avatar (https://avatar-bucket-splitwise.s3.us-west-1.amazonaws.com/1616138183icon-user-default.png)\n')
                 currency = input('Please enter preferred currency (USD)\n')
@@ -131,6 +155,11 @@ class Splitwise():
                 # if user exists: login
                 valid = True
                 allUsers = returnAllUsers()
+
+                if confirmPassword != password or not email or not password or not name:
+                    print('Password incorrent.')
+                    valid = False
+
                 for user in allUsers:
                     if email == user[0]:
                         print('User exists, please re-enter user info')
@@ -205,8 +234,44 @@ class Splitwise():
 
                 res = groupList(self.user.credentials.get('userid'))
                 print(res)
+
                 self.nextStateOpt()
                 continue
+
+            # Leave a group
+            if self.state == 'leave-group':
+                print('************* Under Development *****************')
+                print("***************** Leave Group *******************")
+                print('*************************************************')
+
+                groupInfo = groupList(self.user.credentials.get('userid'))
+                print(groupInfo)
+                groupToLeave = input('Which group would you like to leave?\n')
+                leaveGroup(self.user.credentials.get('userid'), groupToLeave)
+
+                self.nextStateOpt()
+                continue
+
+
+            ##################################################################
+            ########################## In Dev ################################
+            ##################################################################
+
+
+            # Add a person to group, privilege?
+            if self.state == 'add-to-group':
+                print('************* Under Development *****************')
+                print("************ Add Person To Group ****************")
+                print('*************************************************')
+
+
+                toAdd = input('Whom to add?\n')
+                groupNo = input('Which Group?\n')
+                addToGroup(toAdd, groupNo)
+                self.nextStateOpt()
+                continue
+
+            # if self.state == 'move-person-to-another-group':
 
             else:
                 return

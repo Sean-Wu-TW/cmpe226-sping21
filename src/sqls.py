@@ -112,5 +112,42 @@ def groupList(whoami):
       res.append(x)
     return res
 
+def leaveGroup(whoami, groupNo):
+    try:
+        mydb = mysql.connector.connect(
+          host=hostname,
+          user=username,
+          password=password,
+          database=database
+        )
+        mycursor = mydb.cursor()
+        mycursor.execute("DELETE FROM groups_users WHERE user_id = '{}' and group_id = '{}'".format(str(whoami), str(groupNo)))
+
+    except:
+        print('Something went wrong in leaveGroup')
+    finally: 
+        mydb.commit()
+        print(mycursor.rowcount, "record(s) deleted")
+        return 
+
+def addToGroup(whomToAdd, groupNo):
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
+    mycursor = mydb.cursor()
+    sql = "INSERT INTO groups_users (group_id, user_id) VALUES (%s, %s)"
+    val = (groupNo, whomToAdd)
+
+    mycursor.execute(sql, val)
+    
+    mydb.commit()
+    print(mycursor.rowcount, "record(s) added")
+    return 
+
+
+
 
 
