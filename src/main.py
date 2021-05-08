@@ -4,7 +4,7 @@ import readline
 ## Tab completer
 def completer(text, state):
     commands = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
-    'groups', 'help', 'leave-group', 'info']
+    'groups', 'help', 'leave-group', 'info', 'delete-invite']
 
     options = [i for i in commands if i.startswith(text)]
     if state < len(options):
@@ -48,7 +48,7 @@ class Splitwise():
         self.user = None
         self.state = 'welcome'
         self.help = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
-        'groups']
+    'groups', 'help', 'leave-group', 'info', 'delete-invite']
         self.stateLookup = {
             'exit':'login', 
             'test': 'test',
@@ -60,7 +60,8 @@ class Splitwise():
             'groups':'groups',
             'leave-group':'leave-group',
             'add-to-group':'add-to-group',
-            'logout':'welcome'
+            'logout':'welcome',
+            'delete-invite': 'delete-invite'
         }
 
     def stateChanger(self, x):
@@ -266,6 +267,19 @@ class Splitwise():
                 toAdd = input('Whom to add?\n')
                 groupNo = input('Which Group?\n')
                 addToGroup(toAdd, groupNo)
+                self.nextStateOpt()
+                continue
+
+            if self.state == 'delete-invite':
+                print('************* Under Development *****************')
+                print("*************** Delete invite *******************")
+                print('*************************************************')
+                invitationsToDelete = invitations(self.user.credentials.get('email'))
+                print('groups that you are in:')
+                print(invitationsToDelete)
+                inviteToDelete = input('Which invitation would you like to delete?\n')
+                print(inviteToDelete)
+                deleteInvitation(self.user.credentials.get('userid'))
                 self.nextStateOpt()
                 continue
 

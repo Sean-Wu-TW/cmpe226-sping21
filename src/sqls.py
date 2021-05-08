@@ -148,6 +148,18 @@ def addToGroup(whomToAdd, groupNo):
     return 
 
 
+def deleteInvitation(whoami):
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
+    mycursor = mydb.cursor()
+    # mycursor.execute("".format())
+
+    print('Deleted')
+
 
 
 
