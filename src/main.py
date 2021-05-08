@@ -98,6 +98,8 @@ class Splitwise():
             if self.state == 'login':
                 email = input('Please log in (email):')
                 passw = input('Please log in (password):')
+                if userLogin(email, passw):
+                    self.user
                 if not email and not passw:
                     print('logged in as default user')
                     print('1@user.com','user1','21','America/Los_Angeles','USD','English',
