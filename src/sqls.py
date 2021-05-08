@@ -47,15 +47,19 @@ def insertNewUser(email, name, password):
 
 
 def userLogin(email, password):
-    sql = "select password from user where email = '{}'".format(str(email))
+    sql = "select email, name, password from user where email = '{}'".format(str(email))
     mycursor = mydb.cursor()
     mycursor.execute(sql)
     res = []
-    for (x) in mycursor:
+    for x in mycursor:
         res.append(x)
-    hashed_password = res[0][0].encode('utf8')
+    hashed_password = res[0][2].encode('utf8')
 
-    return bcrypt.checkpw(password.encode('utf8'), hashed_password)
+    # if the password is correct, return the user information. Otherwise, return empty list
+    if bcrypt.checkpw(password.encode('utf8'), hashed_password):
+        return res
+    else:
+        return []
 
 
 def returnAllUsers():
@@ -164,10 +168,27 @@ def addToGroup(whomToAdd, groupNo):
     return
 
 
+# display all the friends and debt
 def friendList(whoami):
-    sql = "SELECT DISTINCT(user2) FROM debt where user1={}".format(whoami)
+    sql = "CALL FindFriends({})".format(whoami)
 
     mycursor = mydb.cursor()
     mycursor.execute(sql)
+    res = []
+    for x in mycursor:
+        res.append(x)
 
-    
+    return res
+
+# display detail for a certain friend, like how much is owed in which group
+def friendDetail(whoami, friend_id):
+    sql = "CALL FriendDetail({}, {})".format(whoami, friend_id)
+
+    mycursor = mydb.cursor()
+    mycursor.execute(sql)
+    res = []
+    for x in mycursor:
+        res.append(x)
+
+    return res
+
