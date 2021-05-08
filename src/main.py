@@ -4,7 +4,7 @@ import readline
 ## Tab completer
 def completer(text, state):
     commands = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
-    'groups']
+    'groups', 'help', 'leave-group', 'info']
 
     options = [i for i in commands if i.startswith(text)]
     if state < len(options):
@@ -77,7 +77,7 @@ class Splitwise():
             x = input("what's next? \n")
         self.stateChanger(x)
 
-    
+
 
 
 
@@ -201,13 +201,6 @@ class Splitwise():
                 self.nextStateOpt()
                 continue
 
-
-            # TODOs:
-            # display user balance
-            # display groupsthat user is in
-            # Split bill between groups
-            # 
-
             # view invitations
             if self.state == 'invites':
                 print('*************************************************')
@@ -238,7 +231,18 @@ class Splitwise():
                 self.nextStateOpt()
                 continue
 
-            # Leave a group
+
+
+            ##################################################################
+            ########################## Under Dev #############################
+            ##################################################################
+
+            # TODOs:
+            # Split bill between groups
+            # 
+
+            # Leave a group, require safty check on whether I have
+            # unsettled balance in that group
             if self.state == 'leave-group':
                 print('************* Under Development *****************')
                 print("***************** Leave Group *******************")
@@ -252,13 +256,7 @@ class Splitwise():
                 self.nextStateOpt()
                 continue
 
-
-            ##################################################################
-            ########################## In Dev ################################
-            ##################################################################
-
-
-            # Add a person to group, privilege?
+            # Add a person to group directly, requires privilege
             if self.state == 'add-to-group':
                 print('************* Under Development *****************')
                 print("************ Add Person To Group ****************")
