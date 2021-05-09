@@ -4,7 +4,11 @@ import readline
 ## Tab completer
 def completer(text, state):
     commands = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
-    'groups', 'help', 'leave-group', 'info']
+    'viewGroup', 'help', 'leave-group', 'info', 'friendList', 
+    'friendDetail','createGroup','groupActivity','activityDetail','settleBalance',
+    'addInvite','acceptInvite','declineInvite','updateProfile','changePassword',
+    'addExpense']
+
 
     options = [i for i in commands if i.startswith(text)]
     if state < len(options):
@@ -16,18 +20,17 @@ readline.parse_and_bind("tab: complete")
 readline.set_completer(completer)
 
 
+def cInput(text):
+    res = input(text)
+
 
 class UserInfo():
 
-    def __init__(self):
+    def __init__(self, email='s@gmail.com', name='s', userid='59'):
         self.credentials = {
-            'email': "1@user.com",
-            'name': "user1",
-            'userid': "21",
-            'timezone': "America/Los_Angeles",
-            'currency': "USD",
-            'lang': "English",
-            'avatar': "https://avatar-bucket-splitwise.s3.us-west-1.amazonaws.com/1616181139user-icon.png",
+            'email': email,
+            'name': name,
+            'userid': userid,
             'admin': []
         }
     def userBuilder(self, key, value):
@@ -47,8 +50,12 @@ class Splitwise():
     def __init__(self):
         self.user = None
         self.state = 'welcome'
+        self.prevState = 'welcome'
         self.help = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
-        'groups']
+    'viewGroup', 'help', 'leave-group', 'info', 'friendList', 
+    'friendDetail','createGroup','groupActivity','activityDetail','settleBalance',
+    'addInvite','acceptInvite','declineInvite','updateProfile','changePassword',
+    'addExpense']
         self.stateLookup = {
             'exit':'login', 
             'test': 'test',
@@ -57,20 +64,32 @@ class Splitwise():
             'invites':'invites',
             'dash':'dash',
             'info':'info',
-            'groups':'groups',
+            'viewGroup':'viewGroup',
             'leave-group':'leave-group',
-            'add-to-group':'add-to-group',
-            'logout':'welcome'
+            'friendDetail':'friendDetail',
+            'logout':'welcome',        
+            'friendList':'friendList',
+            'createGroup':'createGroup',
+            'groupActivity':'groupActivity',
+            'activityDetail':'activityDetail', #
+            'settleBalance':'settleBalance', 
+            'addInvite':'addInvite', 
+            'acceptInvite':'acceptInvite', 
+            'declineInvite':'declineInvite', 
+            'updateProfile':'updateProfile', 
+            'changePassword':'changePassword',
+            'addExpense':'addExpense' 
         }
 
     def stateChanger(self, x):
         nextState = self.stateLookup.get(x)
         if nextState:
+            self.prevState = self.state
             self.state = nextState
 
 
     def nextStateOpt(self):
-        print('======')
+        print()
         x = input("what's next? \n")
         while x == 'help':
             print(self.help)
@@ -100,11 +119,15 @@ class Splitwise():
                 passw = input('Please log in (password):')
                 if not email and not passw:
                     print('logged in as default user')
-                    print('1@user.com','user1','21','America/Los_Angeles','USD','English',
-                        'https://avatar-bucket-splitwise.s3.us-west-1.amazonaws.com/1616181139user-icon.png')
+                    print()
                     self.user = UserInfo()
                     self.state = 'info'
                     continue
+                if userLogin(email, passw):
+                    print(userLogin(email, passw))
+                    self.user = UserInfo(userLogin(email, passw)[0])
+                    self.state = 'info'
+
 
             # This is what the user logs in sees, his/her debts
             if self.state == 'info':
@@ -112,11 +135,11 @@ class Splitwise():
                 print("****** Displaying your account information ******")
                 print('*************************************************')
                 print(self.user.info())
-                res = returnDebts(self.user.credentials.get('userid'))
-                if res:
-                    print('*************** Your debts: ***************\n')
-                    print(res)
+                res = friendList(self.user.credentials.get('userid'))
+                print('*************** Your Friends: **************\n')
+                print(res)
                 groups = groupList(self.user.credentials.get('userid'))
+                print('*************** Your Groups: ***************\n')
                 print(groups)
                 self.nextStateOpt()
                 continue
@@ -131,25 +154,14 @@ class Splitwise():
                 name = input('Please enter your name (required)\n')
                 password = input('Please enter password (required)\n')
                 confirmPassword = input('Please confirm password (required)\n')
-                lang = input('Please enter preferred language (English)\n')
-                avatar = input('Please enter avatar (https://avatar-bucket-splitwise.s3.us-west-1.amazonaws.com/1616138183icon-user-default.png)\n')
-                currency = input('Please enter preferred currency (USD)\n')
-                timezone = input('Please enter preferred currency (America/Los_Angeles)\n')
                 #####################
                 print("========= Your info: =========")
                 print("email:", email)
                 print('name:', name)
                 print('password:', password)
-                print('land:',lang)
-                print('avatar:',avatar)
-                print('currency:',currency)
-                print('timezone:',timezone)
                 print('Processing your data...')
                 #####################
-                if lang == "": lang = None
-                if avatar == "": avatar = None
-                if currency == "": currency = None
-                if timezone == "": timezone = None
+
 
 
                 # if user exists: login
@@ -167,7 +179,7 @@ class Splitwise():
                         continue
 
                 if valid:
-                    insertNewUser(email, name, password, timezone, currency, lang, avatar)
+                    insertNewUser(email, name, password)
                     self.stateChanger('test')
                     continue
                 else:
@@ -220,7 +232,7 @@ class Splitwise():
 
 
             # See groups I'm in
-            if self.state == 'groups':
+            if self.state == 'viewGroup':
                 print('*************************************************')
                 print("************ Groups that you're in **************")
                 print('*************************************************')
@@ -231,6 +243,165 @@ class Splitwise():
                 self.nextStateOpt()
                 continue
 
+            if self.state == 'friendList':
+
+                print('*************************************************')
+                print("***************** friendList ********************")
+                print('*************************************************')
+                res = friendList(self.user.credentials.get('userid'))
+                print(res)
+                self.nextStateOpt()
+                continue
+
+            if self.state == 'createGroup':
+                print('*************************************************')
+                print("***************** createGroup *******************")
+                print('*************************************************')
+
+                groupName = input('Please enter group name:\n')
+                if groupName and createGroup(groupName, self.user.credentials.get('userid')):
+                    print('Group created!')
+                else:
+                    print('Failed to create group')
+                self.nextStateOpt()
+                continue
+
+            if self.state == 'groupActivity':
+                print('*************************************************')
+                print("**************** groupActivity ******************")
+                print('*************************************************')
+                res = groupList(self.user.credentials.get('userid'))
+                print(res)
+                if res:
+                    groupToDisplay = input('Which group would you like to view?\n')
+                    groupActivity(groupToDisplay)
+                else:
+                    print('You are not in any group.')
+                self.nextStateOpt()
+                continue
+
+            if self.state == 'activityDetail':
+                print('*************************************************')
+                print("**************** activityDetail *****************")
+                print('*************************************************')
+
+                expense = input('Which expense would you like to view?\n')
+
+                res = activityDetail(expense)
+                print('Your activity:\n', res)
+                self.nextStateOpt()
+                continue
+
+            if self.state == 'settleBalance':
+                print('*************************************************')
+                print("***************** settleBalance *****************")
+                print('*************************************************')
+
+                toSettle = input('Who do you want to settle balance?\n')
+
+                if toSettle and settleBalance(self.user.credentials.get('userid'), toSettle):
+                    print('Balanced settled!')
+                else:
+                    print('Settle failed.')
+
+                self.nextStateOpt()
+                continue
+
+            if self.state == 'addInvite':
+                print('*************************************************')
+                print("******************* addInvite *******************")
+                print('*************************************************')
+                toInvite = input('Enter the email of user to invite(Separated by space)\n')
+                groupToInvite = input('Enter the group to invite\n') 
+                if toInvite and groupToInvite and addInvite(toInvite.split(), groupToInvite):
+                    print('{} invited'.format(toInvite))
+                else:
+                    print('Invitation failed!')
+                self.nextStateOpt()
+                continue
+
+
+            if self.state == 'acceptInvite':
+                print('*************************************************')
+                print("***************** acceptInvite ******************")
+                print('*************************************************')
+
+                groupToAccept = input('To which group do you agree to join?\n')
+
+                if groupToAccept and acceptInvite(groupToAccept, self.user.credentials.get('email')):
+                    print('Joined {}'.format(groupToAccept))
+                else:
+                    print('Join failed')
+                self.nextStateOpt()
+                continue
+
+            if self.state == 'declineInvite':
+                print('*************************************************')
+                print("**************** declineInvite ******************")
+                print('*************************************************')  
+
+                groupToDecline = input('Which group invitation would you like to decline?\n')
+
+                if groupToDecline and declineInvite(groupToDecline, self.user.credentials.get('email')):
+                    print('Invitation to {} declined'.format(groupToDecline))
+                else:
+                    print('Failed to decline.')
+                self.nextStateOpt()
+                continue
+
+            if self.state == 'updateProfile':
+                print('*************************************************')
+                print("*************** Update Profile ******************")
+                print('*************************************************') 
+
+                newName = input('Enter new name:\n')
+                newEmail = input('Enter new email:\n')
+                if newName and newEmail and updateProfile(self.user.credentials.get('userid'), {'name': newName, 'email': newEmail}):
+                    print('Profile updated!')
+                    self.user.credentials['name'] = newName
+                    self.user.credentials['email'] = newEmail
+                else:
+                    print('Failed to update profile')
+                self.nextStateOpt()
+                continue
+
+            if self.state == 'changePassword':
+                print('*************************************************')
+                print("*************** Change Password *****************")
+                print('*************************************************') 
+
+                oldPass = input('Please enter old password:\n')
+                newPass = input('Please enter new password:\n')
+                confirmNewPassword = input('Please confirm new password:\n')
+
+                if oldPass and newPass  \
+                and confirmNewPassword and changePassword(self.user.credentials.get('userid'), oldPass, newPass) \
+                and oldPass == newPass:
+                    print('Password updated!')
+                else:
+                    print('Failed to update password')
+                self.nextStateOpt()
+                continue
+
+            if self.state == 'addExpense':
+                print('*************************************************')
+                print("****************** Add Expense ******************")
+                print('*************************************************') 
+
+                payer = input('Who is paying the bill?\n')
+                debtor = input('Who is splitting the bill with you?(Separated by space)\n')
+                amoutToSplit = input('How much is the bill?\n')
+                groupToSplit = input('Which group is splitting the bill?\n')
+                billName = input('What is the name of the bill?\n')
+                if payer and debtor and amoutToSplit and groupToSplit and billName and \
+                 addExpense(payer, debtor.split(), amoutToSplit, groupToSplit, billName):
+                    print('Expense added')
+                else:
+                    print('Failed to add expense')
+                self.nextStateOpt()
+                continue
+
+
 
 
             ##################################################################
@@ -240,6 +411,7 @@ class Splitwise():
             # TODOs:
             # Split bill between groups
             # 
+
 
             # Leave a group, require safty check on whether I have
             # unsettled balance in that group
@@ -256,23 +428,13 @@ class Splitwise():
                 self.nextStateOpt()
                 continue
 
-            # Add a person to group directly, requires privilege
-            if self.state == 'add-to-group':
-                print('************* Under Development *****************')
-                print("************ Add Person To Group ****************")
-                print('*************************************************')
 
-
-                toAdd = input('Whom to add?\n')
-                groupNo = input('Which Group?\n')
-                addToGroup(toAdd, groupNo)
-                self.nextStateOpt()
-                continue
-
-            # if self.state == 'move-person-to-another-group':
 
             else:
-                return
+                print('Not Inplemented.')
+                self.state = self.prevState
+                continue
+                
 
 
 
