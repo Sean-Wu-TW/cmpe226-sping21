@@ -25,7 +25,7 @@ def cInput(text):
 
 class UserInfo():
 
-    def __init__(self, email='s@gmail.com', name='s', userid='59'):
+    def __init__(self, email='s@gmail.com', name='s', password='', userid='59'):
         self.credentials = {
             'email': email,
             'name': name,
@@ -123,8 +123,8 @@ class Splitwise():
                     self.state = 'info'
                     continue
                 if userLogin(email, passw):
-                    print(userLogin(email, passw))
-                    self.user = UserInfo(userLogin(email, passw)[0])
+                    me = userLogin(email, passw)[0]
+                    self.user = UserInfo(*me)
                     self.state = 'info'
 
 
@@ -179,7 +179,7 @@ class Splitwise():
 
                 if valid:
                     insertNewUser(email, name, password)
-                    self.stateChanger('test')
+                    self.stateChanger('login')
                     continue
                 else:
                     print('insert failed')

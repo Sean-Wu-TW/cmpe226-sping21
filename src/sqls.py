@@ -53,10 +53,11 @@ def userLogin(email, password):
     res = []
     for x in mycursor:
         res.append(x)
-    hashed_password = res[0][2].encode('utf8')
+    
 
     # if the password is correct, return the user information. Otherwise, return empty list
-    if bcrypt.checkpw(password.encode('utf8'), hashed_password):
+    if res and bcrypt.checkpw(password.encode('utf8'), res[0][2].encode('utf8')):
+        # print('res: ', res)
         return res
     else:
         return []
