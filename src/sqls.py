@@ -282,3 +282,49 @@ def declineInvite(group_id, email):
         return True
     else:
         return False
+
+
+def updateProfile(user_id, new_profile):
+    sql = "UPDATE user SET name = '{}', email = '{}' WHERE user_id={}".format(new_profile['name'], new_profile['email'], user_id)
+
+    mycursor = mydb.cursor()
+    mycursor.executemany(sql, val)
+
+    if mycursor.rowcount > 0:
+        mydb.commit()
+        return True
+    else:
+        return False
+
+
+def changePassword(user_id, orig_password, new_password):
+    sql = "select email, name, password from user where user_id = '{}'".format(user_id)
+    mycursor = mydb.cursor()
+    mycursor.execute(sql)
+    res = []
+    for x in mycursor:
+        res.append(x)
+    hashed_password = res[0][2].encode('utf8')
+
+    # if the password is correct, hash the new password and store it
+    if bcrypt.checkpw(orig_password.encode('utf8'), hashed_password):
+        print("orig confirmed")
+
+        salt = bcrypt.gensalt()
+        hashedPassword = bcrypt.hashpw(new_password.encode(), salt)
+        new_sql = "UPDATE user SET password = '{}' WHERE user_id={}".format(hashedPassword.decode('utf-8'), user_id)
+        print(new_sql)
+        mycursor.execute(new_sql)
+
+        if mycursor.rowcount > 0:
+            mydb.commit()
+            return True
+        else:
+            return False
+    else:
+        return False
+
+
+# print(changePassword(58, "12345", "12345678"))
+
+print(userLogin("charles@user.com", "12345678"))
