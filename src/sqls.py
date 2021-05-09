@@ -220,6 +220,26 @@ def groupActivity(group_id):
 
     return res
 
+# sample response: 
+# {'detail': [{'owedBy': 'user1', 'amount': 10.0}, {'owedBy': 'user2', 'amount': 10.0}, {'owedBy': 'user3', 'amount': 10.0}], 'name': 'test4', 'paidBy': 'charles', 'totalAmount': 40.0}
+# detail is how much each user owes the user paid this expense. other is detail of this expense
+def activityDetail(expense_id):
+    sql = "SELECT u1.name as paid_username, e.name, e.cost as total_amount, u2.name as owe_username, se.amount FROM sub_expense se JOIN expense e on se.expense_id=e.expense_id JOIN user u1 on e.user_id = u1.user_id JOIN user u2 on se.user2 = u2.user_id WHERE e.expense_id={}".format(expense_id)
+
+    mycursor = mydb.cursor()
+    mycursor.execute(sql)
+
+    res = {}
+    
+    res['detail'] = []
+    for x in mycursor:
+        res['name'] = x[1]
+        res['paidBy'] = x[0]
+        res['totalAmount'] = x[2]
+        res['detail'].append({'owedBy': x[3], 'amount': x[4]})
+
+    return res
+
 
 def settleBalance(user1, user2):
     sql = "UPDATE debt set balance = 0 where user1={} AND user2={} OR user1={} AND user2={}".format(user1, user2, user2, user1)
@@ -325,6 +345,28 @@ def changePassword(user_id, orig_password, new_password):
         return False
 
 
-# print(changePassword(58, "12345", "12345678"))
+def addExpense(paid_by, user_list, amount, group_id, name):
+    sql = "INSERT INTO expense(user_id, group_id, `name`, cost) VALUES (%s, %s, %s, %s)"
+    val = (paid_by, group_id, name, amount)
+    mycursor = mydb.cursor()
+    mycursor.execute(sql, val)
 
-print(userLogin("charles@user.com", "12345678"))
+    if mycursor.rowcount > 0:
+        mydb.commit()
+    
+    expense_id = mycursor.lastrowid
+
+
+
+    avg_amount = amount / len(user_list)
+    for user in user_list:
+        if user != paid_by:
+            sql = "INSERT INTO sub_expense(expense_id, user1, user2, amount) VALUES (%s, %s, %s, %s)"
+            val = (expense_id, paid_by, user, avg_amount)
+            mycursor.execute(sql, val)
+
+    if mycursor.rowcount > 0:
+        mydb.commit()
+        return True
+    else:
+        return False
