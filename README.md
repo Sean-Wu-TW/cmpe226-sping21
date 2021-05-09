@@ -8,13 +8,7 @@ Go to root folder, then run`source bin/activate && pip install -r requirements.t
 
 ### TODOs:
 
--   Leave group
--   Settle balance
--   Delete Invite
--   Add user to group
--   Create Group
--   Find Friend
--   Update Profile
+- Look up expenseid before for activity detail
 
 
 
@@ -23,5 +17,5 @@ Go to root folder, then run`source bin/activate && pip install -r requirements.t
 ### Some thoughts:
 
 -   If a person wants to leave group X with unsettled balance?
--   
+-   Check if user exists before addInvite
 

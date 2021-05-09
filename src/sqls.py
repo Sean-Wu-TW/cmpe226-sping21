@@ -183,6 +183,7 @@ def deleteInvitation(whoami):
 
 
 # display all the friends and debt
+# Display all debts from a certain user across all groups
 def friendList(whoami):
     sql = "CALL FindFriends({})".format(whoami)
     mydb = mysql.connector.connect(
@@ -365,7 +366,7 @@ def declineInvite(group_id, email):
 
 
 def updateProfile(user_id, new_profile):
-    sql = "UPDATE user SET name = '{}', email = '{}' WHERE user_id={}".format(new_profile['name'], new_profile['email'], user_id)
+    sql = "UPDATE user SET `name` = '{}', `email` = '{}' WHERE `user_id`='{}'".format(new_profile['name'], new_profile['email'], user_id)
     mydb = mysql.connector.connect(
       host=hostname,
       user=username,
@@ -373,7 +374,7 @@ def updateProfile(user_id, new_profile):
       database=database
     )
     mycursor = mydb.cursor()
-    mycursor.executemany(sql, val)
+    mycursor.execute(sql)
 
     if mycursor.rowcount > 0:
         mydb.commit()
@@ -404,7 +405,7 @@ def changePassword(user_id, orig_password, new_password):
         salt = bcrypt.gensalt()
         hashedPassword = bcrypt.hashpw(new_password.encode(), salt)
         new_sql = "UPDATE user SET password = '{}' WHERE user_id={}".format(hashedPassword.decode('utf-8'), user_id)
-        print(new_sql)
+        # print(new_sql)
         mycursor.execute(new_sql)
 
         if mycursor.rowcount > 0:
@@ -451,8 +452,11 @@ def addExpense(paid_by, user_list, amount, group_id, name):
 
 if __name__ == '__main__':
 
-    print('Testing Area\n')
-    print(friendList(59))
+    x = input('Enter a list\n')
+    if x:
+        print(x)
+    else:
+        print('Nothing')
 
 
 
