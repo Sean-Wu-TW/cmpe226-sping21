@@ -19,15 +19,11 @@ readline.set_completer(completer)
 
 class UserInfo():
 
-    def __init__(self):
+    def __init__(self, email='s@gmail.com', name='s', userid='59'):
         self.credentials = {
-            'email': "1@user.com",
-            'name': "user1",
-            'userid': "21",
-            'timezone': "America/Los_Angeles",
-            'currency': "USD",
-            'lang': "English",
-            'avatar': "https://avatar-bucket-splitwise.s3.us-west-1.amazonaws.com/1616181139user-icon.png",
+            'email': email,
+            'name': name,
+            'userid': userid,
             'admin': []
         }
     def userBuilder(self, key, value):
@@ -48,7 +44,7 @@ class Splitwise():
         self.user = None
         self.state = 'welcome'
         self.help = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
-    'groups', 'help', 'leave-group', 'info', 'delete-invite']
+    'groups', 'help', 'leave-group', 'info', 'delete-invite', 'create-group']
         self.stateLookup = {
             'exit':'login', 
             'test': 'test',
@@ -58,6 +54,7 @@ class Splitwise():
             'dash':'dash',
             'info':'info',
             'groups':'groups',
+            'create-group':'create-group',
             'leave-group':'leave-group',
             'add-to-group':'add-to-group',
             'logout':'welcome',
@@ -99,15 +96,17 @@ class Splitwise():
             if self.state == 'login':
                 email = input('Please log in (email):')
                 passw = input('Please log in (password):')
-                if userLogin(email, passw):
-                    self.user
                 if not email and not passw:
                     print('logged in as default user')
-                    print('1@user.com','user1','21','America/Los_Angeles','USD','English',
-                        'https://avatar-bucket-splitwise.s3.us-west-1.amazonaws.com/1616181139user-icon.png')
+                    print()
                     self.user = UserInfo()
                     self.state = 'info'
                     continue
+                if userLogin(email, passw):
+                    print(userLogin(email, passw))
+                    self.user = UserInfo(userLogin(email, passw)[0])
+                    self.state = 'info'
+
 
             # This is what the user logs in sees, his/her debts
             if self.state == 'info':
@@ -115,7 +114,7 @@ class Splitwise():
                 print("****** Displaying your account information ******")
                 print('*************************************************')
                 print(self.user.info())
-                res = returnDebts(self.user.credentials.get('userid'))
+                res = friendList(self.user.credentials.get('userid'))
                 if res:
                     print('*************** Your debts: ***************\n')
                     print(res)
@@ -134,25 +133,14 @@ class Splitwise():
                 name = input('Please enter your name (required)\n')
                 password = input('Please enter password (required)\n')
                 confirmPassword = input('Please confirm password (required)\n')
-                lang = input('Please enter preferred language (English)\n')
-                avatar = input('Please enter avatar (https://avatar-bucket-splitwise.s3.us-west-1.amazonaws.com/1616138183icon-user-default.png)\n')
-                currency = input('Please enter preferred currency (USD)\n')
-                timezone = input('Please enter preferred currency (America/Los_Angeles)\n')
                 #####################
                 print("========= Your info: =========")
                 print("email:", email)
                 print('name:', name)
                 print('password:', password)
-                print('land:',lang)
-                print('avatar:',avatar)
-                print('currency:',currency)
-                print('timezone:',timezone)
                 print('Processing your data...')
                 #####################
-                if lang == "": lang = None
-                if avatar == "": avatar = None
-                if currency == "": currency = None
-                if timezone == "": timezone = None
+
 
 
                 # if user exists: login
@@ -170,7 +158,7 @@ class Splitwise():
                         continue
 
                 if valid:
-                    insertNewUser(email, name, password, timezone, currency, lang, avatar)
+                    insertNewUser(email, name, password)
                     self.stateChanger('test')
                     continue
                 else:
@@ -244,6 +232,14 @@ class Splitwise():
             # Split bill between groups
             # 
 
+            # Create a group
+            if self.state == 'create-group':
+                print('*************************************************')
+                print("***************** Create Group ******************")
+                print('*************************************************')
+
+                
+
             # Leave a group, require safty check on whether I have
             # unsettled balance in that group
             if self.state == 'leave-group':
@@ -284,6 +280,13 @@ class Splitwise():
                 deleteInvitation(self.user.credentials.get('userid'))
                 self.nextStateOpt()
                 continue
+
+            if self.state == 'friendList':
+                print('************* Under Development *****************')
+                print("***************** friendList ********************")
+                print('*************************************************')
+                res = friendList()
+                print(res)
 
             # if self.state == 'move-person-to-another-group':
 

@@ -47,7 +47,7 @@ def insertNewUser(email, name, password):
 
 
 def userLogin(email, password):
-    sql = "select email, name, password from user where email = '{}'".format(str(email))
+    sql = "select email, name, password, user_id from user where email = '{}'".format(str(email))
     mycursor = mydb.cursor()
     mycursor.execute(sql)
     res = []
