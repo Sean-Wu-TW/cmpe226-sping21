@@ -8,7 +8,9 @@ Go to root folder, then run`source bin/activate && pip install -r requirements.t
 
 ### TODOs:
 
+
 - Look up expenseid before for activity detail
+
 
 
 
@@ -18,4 +20,5 @@ Go to root folder, then run`source bin/activate && pip install -r requirements.t
 
 -   If a person wants to leave group X with unsettled balance?
 -   Check if user exists before addInvite
+
 

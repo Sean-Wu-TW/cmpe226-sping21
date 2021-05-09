@@ -9,6 +9,7 @@ def completer(text, state):
     'addInvite','acceptInvite','declineInvite','updateProfile','changePassword',
     'addExpense']
 
+
     options = [i for i in commands if i.startswith(text)]
     if state < len(options):
         return options[state]
@@ -243,6 +244,7 @@ class Splitwise():
                 continue
 
             if self.state == 'friendList':
+
                 print('*************************************************')
                 print("***************** friendList ********************")
                 print('*************************************************')
@@ -317,6 +319,7 @@ class Splitwise():
                     print('Invitation failed!')
                 self.nextStateOpt()
                 continue
+
 
             if self.state == 'acceptInvite':
                 print('*************************************************')
