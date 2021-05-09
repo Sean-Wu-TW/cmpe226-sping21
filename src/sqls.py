@@ -185,8 +185,12 @@ def deleteInvitation(whoami):
 # display all the friends and debt
 def friendList(whoami):
     sql = "CALL FindFriends({})".format(whoami)
-
-
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
     mycursor = mydb.cursor()
     mycursor.execute(sql)
     res = []
@@ -199,7 +203,12 @@ def friendList(whoami):
 # display detail for a certain friend, like how much is owed in which group
 def friendDetail(whoami, friend_id):
     sql = "CALL FriendDetail({}, {})".format(whoami, friend_id)
-
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
     mycursor = mydb.cursor()
     mycursor.execute(sql)
     res = []
@@ -213,7 +222,12 @@ def friendDetail(whoami, friend_id):
 # Create group will create a group and add the user created it to the group
 def createGroup(group_name, user_id):
     sql = "CALL CreateGroup(\"{}\", {});".format(group_name, user_id)
-    
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
     mycursor = mydb.cursor()
     mycursor.execute(sql)
 
@@ -227,7 +241,12 @@ def createGroup(group_name, user_id):
 # This should return all the activity inside this group
 def groupActivity(group_id):
     sql = "select * from `groups` g join expense e on g.group_id = e.group_id where g.group_id = {} ORDER BY e.`time` DESC ".format(group_id)
-
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
     mycursor = mydb.cursor()
     mycursor.execute(sql)
     res = []
@@ -241,7 +260,12 @@ def groupActivity(group_id):
 # detail is how much each user owes the user paid this expense. other is detail of this expense
 def activityDetail(expense_id):
     sql = "SELECT u1.name as paid_username, e.name, e.cost as total_amount, u2.name as owe_username, se.amount FROM sub_expense se JOIN expense e on se.expense_id=e.expense_id JOIN user u1 on e.user_id = u1.user_id JOIN user u2 on se.user2 = u2.user_id WHERE e.expense_id={}".format(expense_id)
-
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
     mycursor = mydb.cursor()
     mycursor.execute(sql)
 
@@ -259,7 +283,12 @@ def activityDetail(expense_id):
 
 def settleBalance(user1, user2):
     sql = "UPDATE debt set balance = 0 where user1={} AND user2={} OR user1={} AND user2={}".format(user1, user2, user2, user1)
-
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
     mycursor = mydb.cursor()
     mycursor.execute(sql)
 
@@ -281,7 +310,12 @@ def addInvite(user_list, group_id):
         val.append((group_id, user))
 
     sql = "INSERT INTO group_invite (group_id, email) VALUES (%s, %s)"
-
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
     mycursor = mydb.cursor()
     mycursor.executemany(sql, val)
 
@@ -295,7 +329,12 @@ def addInvite(user_list, group_id):
 # accept invite, need user's email and the group_id user invited to
 def acceptInvite(group_id, email):
     sql = "CALL AcceptInvite({}, \"{}\")".format(group_id, str(email))
-
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
     mycursor = mydb.cursor()
     mycursor.execute(sql)
 
@@ -309,7 +348,12 @@ def acceptInvite(group_id, email):
 # decline invite, just delete that invite
 def declineInvite(group_id, email):
     sql = "DELETE FROM group_invite WHERE group_id = {} and email = \'{}\'".format(group_id, email)
-
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
     mycursor = mydb.cursor()
     mycursor.execute(sql)
 
@@ -322,7 +366,12 @@ def declineInvite(group_id, email):
 
 def updateProfile(user_id, new_profile):
     sql = "UPDATE user SET name = '{}', email = '{}' WHERE user_id={}".format(new_profile['name'], new_profile['email'], user_id)
-
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
     mycursor = mydb.cursor()
     mycursor.executemany(sql, val)
 
@@ -335,6 +384,12 @@ def updateProfile(user_id, new_profile):
 
 def changePassword(user_id, orig_password, new_password):
     sql = "select email, name, password from user where user_id = '{}'".format(user_id)
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
     mycursor = mydb.cursor()
     mycursor.execute(sql)
     res = []
@@ -364,6 +419,12 @@ def changePassword(user_id, orig_password, new_password):
 def addExpense(paid_by, user_list, amount, group_id, name):
     sql = "INSERT INTO expense(user_id, group_id, `name`, cost) VALUES (%s, %s, %s, %s)"
     val = (paid_by, group_id, name, amount)
+    mydb = mysql.connector.connect(
+      host=hostname,
+      user=username,
+      password=password,
+      database=database
+    )
     mycursor = mydb.cursor()
     mycursor.execute(sql, val)
 
@@ -386,3 +447,14 @@ def addExpense(paid_by, user_list, amount, group_id, name):
         return True
     else:
         return False
+
+
+if __name__ == '__main__':
+
+    print('Testing Area\n')
+    print(friendList(59))
+
+
+
+
+

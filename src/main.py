@@ -4,7 +4,7 @@ import readline
 ## Tab completer
 def completer(text, state):
     commands = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
-    'groups', 'help', 'leave-group', 'info', 'delete-invite']
+    'groups', 'help', 'leave-group', 'info', 'delete-invite', 'friendList']
 
     options = [i for i in commands if i.startswith(text)]
     if state < len(options):
@@ -58,7 +58,8 @@ class Splitwise():
             'leave-group':'leave-group',
             'add-to-group':'add-to-group',
             'logout':'welcome',
-            'delete-invite': 'delete-invite'
+            'delete-invite': 'delete-invite',
+            'friendList':'friendList'
         }
 
     def stateChanger(self, x):
@@ -286,8 +287,11 @@ class Splitwise():
                 print('************* Under Development *****************')
                 print("***************** friendList ********************")
                 print('*************************************************')
-                res = friendList()
+                res = friendList(self.user.credentials.get('userid'))
                 print(res)
+                self.nextStateOpt()
+                continue
+
 
 
             else:
