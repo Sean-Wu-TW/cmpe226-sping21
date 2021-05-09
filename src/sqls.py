@@ -47,7 +47,8 @@ def insertNewUser(email, name, password):
 
 
 def userLogin(email, password):
-    sql = "select email, name, password from user where email = '{}'".format(str(email))
+    sql = "select email, name, password from user where email = '{}'".format(
+        str(email))
     mycursor = mydb.cursor()
     mycursor.execute(sql)
     res = []
@@ -197,7 +198,7 @@ def friendDetail(whoami, friend_id):
 # Create group will create a group and add the user created it to the group
 def createGroup(group_name, user_id):
     sql = "CALL CreateGroup(\"{}\", {});".format(group_name, user_id)
-    
+
     mycursor = mydb.cursor()
     mycursor.execute(sql)
 
@@ -210,7 +211,8 @@ def createGroup(group_name, user_id):
 
 # This should return all the activity inside this group
 def groupActivity(group_id):
-    sql = "select * from `groups` g join expense e on g.group_id = e.group_id where g.group_id = {} ORDER BY e.`time` DESC ".format(group_id)
+    sql = "select * from `groups` g join expense e on g.group_id = e.group_id where g.group_id = {} ORDER BY e.`time` DESC ".format(
+        group_id)
 
     mycursor = mydb.cursor()
     mycursor.execute(sql)
@@ -220,17 +222,20 @@ def groupActivity(group_id):
 
     return res
 
-# sample response: 
+# sample response:
 # {'detail': [{'owedBy': 'user1', 'amount': 10.0}, {'owedBy': 'user2', 'amount': 10.0}, {'owedBy': 'user3', 'amount': 10.0}], 'name': 'test4', 'paidBy': 'charles', 'totalAmount': 40.0}
 # detail is how much each user owes the user paid this expense. other is detail of this expense
+
+
 def activityDetail(expense_id):
-    sql = "SELECT u1.name as paid_username, e.name, e.cost as total_amount, u2.name as owe_username, se.amount FROM sub_expense se JOIN expense e on se.expense_id=e.expense_id JOIN user u1 on e.user_id = u1.user_id JOIN user u2 on se.user2 = u2.user_id WHERE e.expense_id={}".format(expense_id)
+    sql = "SELECT u1.name as paid_username, e.name, e.cost as total_amount, u2.name as owe_username, se.amount FROM sub_expense se JOIN expense e on se.expense_id=e.expense_id JOIN user u1 on e.user_id = u1.user_id JOIN user u2 on se.user2 = u2.user_id WHERE e.expense_id={}".format(
+        expense_id)
 
     mycursor = mydb.cursor()
     mycursor.execute(sql)
 
     res = {}
-    
+
     res['detail'] = []
     for x in mycursor:
         res['name'] = x[1]
@@ -242,7 +247,8 @@ def activityDetail(expense_id):
 
 
 def settleBalance(user1, user2):
-    sql = "UPDATE debt set balance = 0 where user1={} AND user2={} OR user1={} AND user2={}".format(user1, user2, user2, user1)
+    sql = "UPDATE debt set balance = 0 where user1={} AND user2={} OR user1={} AND user2={}".format(
+        user1, user2, user2, user1)
 
     mycursor = mydb.cursor()
     mycursor.execute(sql)
@@ -292,7 +298,8 @@ def acceptInvite(group_id, email):
 
 # decline invite, just delete that invite
 def declineInvite(group_id, email):
-    sql = "DELETE FROM group_invite WHERE group_id = {} and email = \'{}\'".format(group_id, email)
+    sql = "DELETE FROM group_invite WHERE group_id = {} and email = \'{}\'".format(
+        group_id, email)
 
     mycursor = mydb.cursor()
     mycursor.execute(sql)
@@ -305,7 +312,8 @@ def declineInvite(group_id, email):
 
 
 def updateProfile(user_id, new_profile):
-    sql = "UPDATE user SET name = '{}', email = '{}' WHERE user_id={}".format(new_profile['name'], new_profile['email'], user_id)
+    sql = "UPDATE user SET name = '{}', email = '{}' WHERE user_id={}".format(
+        new_profile['name'], new_profile['email'], user_id)
 
     mycursor = mydb.cursor()
     mycursor.executemany(sql, val)
@@ -318,7 +326,8 @@ def updateProfile(user_id, new_profile):
 
 
 def changePassword(user_id, orig_password, new_password):
-    sql = "select email, name, password from user where user_id = '{}'".format(user_id)
+    sql = "select email, name, password from user where user_id = '{}'".format(
+        user_id)
     mycursor = mydb.cursor()
     mycursor.execute(sql)
     res = []
@@ -332,7 +341,8 @@ def changePassword(user_id, orig_password, new_password):
 
         salt = bcrypt.gensalt()
         hashedPassword = bcrypt.hashpw(new_password.encode(), salt)
-        new_sql = "UPDATE user SET password = '{}' WHERE user_id={}".format(hashedPassword.decode('utf-8'), user_id)
+        new_sql = "UPDATE user SET password = '{}' WHERE user_id={}".format(
+            hashedPassword.decode('utf-8'), user_id)
         print(new_sql)
         mycursor.execute(new_sql)
 
@@ -353,10 +363,8 @@ def addExpense(paid_by, user_list, amount, group_id, name):
 
     if mycursor.rowcount > 0:
         mydb.commit()
-    
+
     expense_id = mycursor.lastrowid
-
-
 
     avg_amount = amount / len(user_list)
     for user in user_list:
@@ -370,3 +378,42 @@ def addExpense(paid_by, user_list, amount, group_id, name):
         return True
     else:
         return False
+
+
+def addComment(expense_id, user_id, content):
+    mydb = mysql.connector.connect(
+        host=hostname,
+        user=username,
+        password=password,
+        database=database
+    )
+    mycursor = mydb.cursor()
+
+    sql = "INSERT INTO comment(expense_id, user_id, content) VALUES(%s, %s, %s)"
+    val = (expense_id, user_id, content)
+    mycursor.execute(sql, val)
+    if mycursor.rowcount > 0:
+        mydb.commit()
+        return True
+    else:
+        return False
+
+def getComment(expense_id):
+    mydb = mysql.connector.connect(
+        host=hostname,
+        user=username,
+        password=password,
+        database=database
+    )
+    mycursor = mydb.cursor()
+
+    sql = "SELECT u.name, c.content, time FROM comment c JOIN user u on c.user_id=u.user_id WHERE expense_id={}".format(expense_id)
+    mycursor.execute(sql)
+    
+    res = []
+    for x in mycursor:
+        res.append(x)
+
+    return res
+
+print(getComment(40))
