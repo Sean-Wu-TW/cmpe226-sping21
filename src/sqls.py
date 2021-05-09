@@ -180,6 +180,7 @@ def friendList(whoami):
 
     return res
 
+
 # display detail for a certain friend, like how much is owed in which group
 def friendDetail(whoami, friend_id):
     sql = "CALL FriendDetail({}, {})".format(whoami, friend_id)
@@ -192,3 +193,20 @@ def friendDetail(whoami, friend_id):
 
     return res
 
+
+# Create group will create a group and add the user created it to the group
+def createGroup(group_name, user_id):
+    sql = "CALL CreateGroup(\"{}\", {});".format(group_name, user_id)
+    
+    mycursor = mydb.cursor()
+    mycursor.execute(sql)
+
+    if mycursor.rowcount > 0:
+        mydb.commit()
+        return True
+    else:
+        return False
+
+
+# This should return all the activity inside this group
+# def groupDetail(group_id):
