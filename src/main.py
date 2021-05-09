@@ -238,7 +238,8 @@ class Splitwise():
                 print("***************** Create Group ******************")
                 print('*************************************************')
 
-                
+                groupName = input('Group name?\n')
+                createGroup(self.user.credentials.get('userid'), groupName)
 
             # Leave a group, require safty check on whether I have
             # unsettled balance in that group
@@ -288,7 +289,6 @@ class Splitwise():
                 res = friendList()
                 print(res)
 
-            # if self.state == 'move-person-to-another-group':
 
             else:
                 return

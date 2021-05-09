@@ -207,3 +207,10 @@ def friendDetail(whoami, friend_id):
 
     return res
 
+def createGroup(userid, groupName):
+
+    # TODO...
+
+
+
+
