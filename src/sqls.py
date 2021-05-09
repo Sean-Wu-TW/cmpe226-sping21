@@ -209,4 +209,76 @@ def createGroup(group_name, user_id):
 
 
 # This should return all the activity inside this group
-# def groupDetail(group_id):
+def groupActivity(group_id):
+    sql = "select * from `groups` g join expense e on g.group_id = e.group_id where g.group_id = {} ORDER BY e.`time` DESC ".format(group_id)
+
+    mycursor = mydb.cursor()
+    mycursor.execute(sql)
+    res = []
+    for x in mycursor:
+        res.append(x)
+
+    return res
+
+
+def settleBalance(user1, user2):
+    sql = "UPDATE debt set balance = 0 where user1={} AND user2={} OR user1={} AND user2={}".format(user1, user2, user2, user1)
+
+    mycursor = mydb.cursor()
+    mycursor.execute(sql)
+
+    mydb.commit()
+
+    if mycursor.rowcount > 0:
+        mydb.commit()
+        return True
+    else:
+        return False
+
+
+# add invite, user_list is a list of user email that the user has invited to the group
+# sample usage: addInvite(user_list=["1@user.com", "2@user.com"], group_id=51)
+# if false, abort all add invite query.
+def addInvite(user_list, group_id):
+    val = []
+    for user in user_list:
+        val.append((group_id, user))
+
+    sql = "INSERT INTO group_invite (group_id, email) VALUES (%s, %s)"
+
+    mycursor = mydb.cursor()
+    mycursor.executemany(sql, val)
+
+    if mycursor.rowcount > 0:
+        mydb.commit()
+        return True
+    else:
+        return False
+
+
+# accept invite, need user's email and the group_id user invited to
+def acceptInvite(group_id, email):
+    sql = "CALL AcceptInvite({}, \"{}\")".format(group_id, str(email))
+
+    mycursor = mydb.cursor()
+    mycursor.execute(sql)
+
+    if mycursor.rowcount > 0:
+        mydb.commit()
+        return True
+    else:
+        return False
+
+
+# decline invite, just delete that invite
+def declineInvite(group_id, email):
+    sql = "DELETE FROM group_invite WHERE group_id = {} and email = \'{}\'".format(group_id, email)
+
+    mycursor = mydb.cursor()
+    mycursor.execute(sql)
+
+    if mycursor.rowcount > 0:
+        mydb.commit()
+        return True
+    else:
+        return False
