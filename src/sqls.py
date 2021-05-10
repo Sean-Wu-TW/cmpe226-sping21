@@ -56,11 +56,13 @@ def userLogin(email, password):
     res = []
     for x in mycursor:
         res.append(x)
-    
+        
     logging.info('User login: {} {}'.format(email, password))
+
     # if the password is correct, return the user information. Otherwise, return empty list
     if res and bcrypt.checkpw(password.encode('utf8'), res[0][2].encode('utf8')):
         # print('res: ', res)
+
         return res
     else:
         return []
@@ -80,7 +82,6 @@ def returnAllUsers():
     for x in mycursor:
         res.append(x)
     return res
-
 
 def returnAllGroups():
     logging.info('Return all groups')
@@ -435,7 +436,6 @@ def changePassword(user_id, orig_password, new_password):
     # if the password is correct, hash the new password and store it
     if bcrypt.checkpw(orig_password.encode('utf8'), hashed_password):
         # print("orig confirmed")
-
         salt = bcrypt.gensalt()
         hashedPassword = bcrypt.hashpw(new_password.encode(), salt)
         new_sql = "UPDATE user SET password = '{}' WHERE user_id={}".format(hashedPassword.decode('utf-8'), user_id)
