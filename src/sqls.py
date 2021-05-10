@@ -415,5 +415,3 @@ def getComment(expense_id):
         res.append(x)
 
     return res
-
-print(getComment(40))
