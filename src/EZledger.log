@@ -46,3 +46,42 @@
 2021-05-09 21:44:12,340 - addExpense - 66 ['64', '65'] 600 57
 2021-05-09 21:44:15,578 - CALL FindFriends - 66
 2021-05-09 21:44:15,770 - groupList - 66
+2021-05-09 22:46:58,797 - User login: charles@user.com 12345678
+2021-05-09 22:46:59,094 - User login: charles@user.com 12345678
+2021-05-09 22:46:59,362 - CALL FindFriends - 58
+2021-05-09 22:46:59,627 - groupList - 58
+2021-05-09 22:48:16,342 - groupList - 58
+2021-05-09 22:48:23,169 - Return all groups
+2021-05-09 22:48:23,243 - groupActivity - 46
+2021-05-09 22:48:27,636 - groupList - 58
+2021-05-09 22:48:29,269 - Return all groups
+2021-05-09 22:48:29,353 - groupActivity - 50
+2021-05-09 22:48:32,316 - groupList - 58
+2021-05-09 22:48:34,080 - Return all groups
+2021-05-09 22:48:34,152 - groupActivity - 51
+2021-05-09 22:56:49,438 - User login: charles@user.com 12345678
+2021-05-09 22:56:49,737 - User login: charles@user.com 12345678
+2021-05-09 22:56:50,009 - CALL FindFriends - 58
+2021-05-09 22:56:50,088 - groupList - 58
+2021-05-09 22:56:52,690 - groupList - 58
+2021-05-09 22:58:20,958 - User login: charles@user.com 12345678
+2021-05-09 22:58:21,270 - User login: charles@user.com 12345678
+2021-05-09 22:58:21,538 - CALL FindFriends - 58
+2021-05-09 22:58:21,816 - groupList - 58
+2021-05-09 22:58:24,696 - CALL FindFriends - 58
+2021-05-09 22:58:24,992 - groupList - 58
+2021-05-09 22:58:27,622 - groupList - 58
+2021-05-09 23:01:42,560 - Return all users
+2021-05-09 23:01:42,672 - Return all users
+2021-05-09 23:01:42,743 - Return all groups
+2021-05-09 23:01:42,815 - addExpense - 58 ['21', '58'] 50 51
+2021-05-09 23:03:47,025 - Return all users
+2021-05-09 23:03:47,143 - settleBalance - 58 21
+2021-05-09 23:03:50,255 - Return all users
+2021-05-09 23:03:50,343 - settleBalance - 58 22
+2021-05-09 23:03:52,782 - Return all users
+2021-05-09 23:03:52,880 - settleBalance - 58 23
+2021-05-09 23:04:00,534 - CALL FindFriends - 58
+2021-05-09 23:04:00,618 - groupList - 58
+2021-05-09 23:04:10,579 - groupList - 58
+2021-05-09 23:04:38,110 - Return all groups

@@ -535,6 +535,24 @@ def getComment(expense_id):
 
     return res
 
+def getGroupUsers(group_id):
+    mydb = mysql.connector.connect(
+        host=hostname,
+        user=username,
+        password=password,
+        database=database
+    )
+    mycursor = mydb.cursor()
+
+    sql = "SELECT u.name, u.user_id from groups_users g join user u on u.user_id = g.user_id where group_id = {}".format(group_id)
+    mycursor.execute(sql)
+    
+    res = []
+    for x in mycursor:
+        res.append(x)
+
+    return res
+
 
 if __name__ == '__main__':
 
