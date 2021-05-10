@@ -53,10 +53,11 @@ def userLogin(email, password):
     res = []
     for x in mycursor:
         res.append(x)
-    hashed_password = res[0][2].encode('utf8')
 
     # if the password is correct, return the user information. Otherwise, return empty list
-    if bcrypt.checkpw(password.encode('utf8'), hashed_password):
+    if res and bcrypt.checkpw(password.encode('utf8'), res[0][2].encode('utf8')):
+        # print('res: ', res)
+
         return res
     else:
         return []
@@ -71,6 +72,20 @@ def returnAllUsers():
     )
     mycursor = mydb.cursor()
     mycursor.execute("SELECT * FROM user")
+    res = []
+    for x in mycursor:
+        res.append(x)
+    return res
+
+def returnAllGroups():
+    mydb = mysql.connector.connect(
+        host=hostname,
+        user=username,
+        password=password,
+        database=database
+    )
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT * FROM `groups`")
     res = []
     for x in mycursor:
         res.append(x)
@@ -400,8 +415,7 @@ def changePassword(user_id, orig_password, new_password):
 
     # if the password is correct, hash the new password and store it
     if bcrypt.checkpw(orig_password.encode('utf8'), hashed_password):
-        print("orig confirmed")
-
+        # print("orig confirmed")
         salt = bcrypt.gensalt()
         hashedPassword = bcrypt.hashpw(new_password.encode(), salt)
         new_sql = "UPDATE user SET password = '{}' WHERE user_id={}".format(hashedPassword.decode('utf-8'), user_id)
@@ -414,6 +428,7 @@ def changePassword(user_id, orig_password, new_password):
         else:
             return False
     else:
+        print('Old password incorrect!')
         return False
 
 
@@ -436,7 +451,8 @@ def addExpense(paid_by, user_list, amount, group_id, name):
 
 
 
-    avg_amount = amount / len(user_list)
+    avg_amount = int(amount) / len(user_list)
+    # print("user_list: ", user_list)
     for user in user_list:
         if user != paid_by:
             sql = "INSERT INTO sub_expense(expense_id, user1, user2, amount) VALUES (%s, %s, %s, %s)"
