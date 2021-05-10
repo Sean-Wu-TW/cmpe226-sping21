@@ -21,9 +21,11 @@ readline.parse_and_bind("tab: complete")
 readline.set_completer(completer)
 
 
+
 class UserInfo():
 
     def __init__(self, email='s@gmail.com', name='s', password='', userid='59'):
+
         self.credentials = {
             'email': email,
             'name': name,
@@ -157,6 +159,7 @@ class Splitwise():
                     print('Log in failed.')
                     self.state = 'welcome'
                     continue
+
 
 
             # This is what the user logs in sees, his/her debts
@@ -305,6 +308,7 @@ class Splitwise():
                 if res:
                     groupToDisplay = input('Which group would you like to view?\n')
 
+
                     if not self.checkGroupExists(groupToDisplay):
                         self.nextStateOpt()
                         continue
@@ -317,12 +321,10 @@ class Splitwise():
                 self.nextStateOpt()
                 continue
 
-
             if self.state == 'settleBalance':
                 print('*************************************************')
                 print("***************** settleBalance *****************")
                 print('*************************************************')
-
                 toSettle = input('Who do you want to settle balance(userid)?\n')
 
                 if not self.checkUserExists(toInvite):
@@ -424,6 +426,7 @@ class Splitwise():
                 print("****************** Add Expense ******************")
                 print('*************************************************') 
 
+
                 payer = input('Who is paying the bill?(user_id)\n')
                 debtor = input('Who is splitting the bill with you?(Separated by space, user_id)\n')
                 amoutToSplit = input('How much is the bill?\n')
@@ -443,7 +446,6 @@ class Splitwise():
                 if not self.checkGroupExists(groupToSplit):
                     self.nextStateOpt()
                     continue
-
 
                 if payer and debtor and amoutToSplit and groupToSplit and billName and \
                  addExpense(payer, debtor.split(), amoutToSplit, groupToSplit, billName):
@@ -467,6 +469,7 @@ class Splitwise():
                     print(detail)
                 self.nextStateOpt()
                 continue
+
 
 
 
