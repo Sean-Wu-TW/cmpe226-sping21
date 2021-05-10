@@ -42,7 +42,7 @@ class UserInfo():
         # output groups that your are currently in
 
 
-class Splitwise():
+class EZLedger():
     
     '''states: login, sign-up, test, dash, invites, dash, info, groups'''
 
@@ -499,7 +499,7 @@ class Splitwise():
                 self.nextStateOpt()
                 continue
 
-                
+
             # Leave a group, require safty check on whether I have
             # unsettled balance in that group
             if self.state == 'leaveGroup':
@@ -570,5 +570,5 @@ class Splitwise():
                 return False
 
 if __name__ == '__main__':
-    app = Splitwise()
+    app = EZLedger()
     app.run()
