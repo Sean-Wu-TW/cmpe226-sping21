@@ -5,7 +5,7 @@ import time
 ## Tab completer
 def completer(text, state):
     commands = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
-    'viewGroup', 'help', 'leave-group', 'info', 'friendList', 
+    'viewGroup', 'help', 'leaveGroup', 'info', 'friendList', 
     'friendDetail','createGroup','groupActivity','activityDetail','settleBalance',
     'addInvite','acceptInvite','declineInvite','updateProfile','changePassword',
     'addExpense']
@@ -64,7 +64,7 @@ class Splitwise():
             'dash':'dash',
             'info':'info',
             'viewGroup':'viewGroup',
-            'leave-group':'leave-group',
+            'leaveGroup':'leaveGroup',
             'friendDetail':'friendDetail',
             'logout':'welcome',        
             'friendList':'friendList',
@@ -340,7 +340,7 @@ class Splitwise():
                 print('*************************************************')
                 toSettle = input('Who do you want to settle balance(userid)?\n')
 
-                if not self.checkUserExists(toInvite):
+                if not self.checkUserExists(toSettle):
                     self.nextStateOpt()
                     continue
 
@@ -385,7 +385,7 @@ class Splitwise():
 
                 groupToAccept = input('To which group do you agree to join?\n')
 
-                if not self.checkUserExists(groupToAccept):
+                if not self.checkGroupExists(groupToAccept):
                     self.nextStateOpt()
                     continue
 
@@ -403,7 +403,11 @@ class Splitwise():
 
                 groupToDecline = input('Which group invitation would you like to decline?\n')
 
-                if groupToDecline and declineInvite(groupToDecline, self.user.credentials.get('email')):
+                if not self.checkGroupExists(groupToDecline):
+                    self.nextStateOpt()
+                    continue
+
+                if declineInvite(groupToDecline, self.user.credentials.get('email')):
                     print('Invitation to {} declined'.format(groupToDecline))
                 else:
                     print('Failed to decline.')
@@ -461,6 +465,7 @@ class Splitwise():
                     if not self.checkUserExists(user):
                         valid = False
                         break
+
                 if not valid:
                     self.nextStateOpt()
                     continue
@@ -493,6 +498,34 @@ class Splitwise():
                 self.nextStateOpt()
                 continue
 
+                
+            # Leave a group, require safty check on whether I have
+            # unsettled balance in that group
+            if self.state == 'leaveGroup':
+                print('*************************************************')
+                print("***************** Leave Group *******************")
+                print('*************************************************')
+
+                groupInfo = groupList(self.user.credentials.get('userid'))
+                for x in groupInfo:
+                    print('Group id: {}, Group name: {}'.format(x[0], x[1]))
+                res = returnDebts(self.user.credentials.get('userid'))
+                print(res)
+
+                groupToLeave = input('Which group would you like to leave?\n')
+
+                if not self.checkGroupExists(groupToLeave):
+                    self.nextStateOpt()
+                    continue
+
+                if any(True if str(x[2]) == str(groupToLeave) and int(x[3]) != 0 else False for x in res):
+                    print('Cannot leave group, you have unsettled debts.')
+                    self.nextStateOpt()
+                    continue
+                else:
+                    leaveGroup(self.user.credentials.get('userid'), groupToLeave)
+                    self.nextStateOpt()
+                    continue
 
 
 
@@ -540,8 +573,6 @@ class Splitwise():
                 groupToLeave = input('Which group would you like to leave? (enter group id)\n')
                 leaveGroup(self.user.credentials.get('userid'), groupToLeave)
 
-                self.nextStateOpt()
-                continue
 
 
 
