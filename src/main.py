@@ -37,7 +37,7 @@ class UserInfo():
         return self
 
     def info(self):
-        print(self.credentials)
+        return self.credentials
         # output groups that your are currently in
 
 
