@@ -2,7 +2,7 @@ import bcrypt
 import hashlib
 import mysql.connector
 import logging
-logging.basicConfig(filename='EZledger.log', filemode='w', format='%(asctime)s - %(message)s', level=logging.INFO)
+logging.basicConfig(filename='EZledger.log', filemode='a', format='%(asctime)s - %(message)s', level=logging.INFO)
 hostname = 'database-1.c1sqwxkauabb.us-west-1.rds.amazonaws.com'
 username = 'admin'
 password = '19950808'

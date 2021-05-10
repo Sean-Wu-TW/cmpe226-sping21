@@ -4,7 +4,7 @@ import time
 
 ## Tab completer
 def completer(text, state):
-    commands = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
+    commands = ['login', 'sign-up', 'add-to-group', 'test', 'invites', 'exit',
     'viewGroup', 'help', 'leaveGroup', 'info', 'friendList', 
     'friendDetail','createGroup','groupActivity','activityDetail','settleBalance',
     'addInvite','acceptInvite','declineInvite','updateProfile','changePassword',
@@ -43,14 +43,14 @@ class UserInfo():
 
 class EZLedger():
     
-    '''states: login, sign-up, test, dash, invites, dash, info, groups'''
+    '''states: login, sign-up, test, invites, info, groups'''
 
     def __init__(self):
         self.loggedIn = False
         self.user = None
         self.state = 'welcome'
         self.prevState = 'welcome'
-        self.help = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
+        self.help = ['login', 'sign-up', 'add-to-group', 'test', 'invites', 'exit',
     'viewGroup', 'help', 'leave-group', 'info', 'friendList', 
     'friendDetail','createGroup','groupActivity','activityDetail','settleBalance',
     'addInvite','acceptInvite','declineInvite','updateProfile','changePassword',
@@ -61,7 +61,6 @@ class EZLedger():
             'login':'login',
             'sign-up':'sign-up',
             'invites':'invites',
-            'dash':'dash',
             'info':'info',
             'viewGroup':'viewGroup',
             'leaveGroup':'leaveGroup',
@@ -239,21 +238,6 @@ class EZLedger():
                 self.nextStateOpt()
                 continue
 
-
-            # case when user logins into the dashboard
-            if self.state == 'dash':
-                print('*************************************************')
-                print("****************** Dashbaord ********************")
-                print('*************************************************')
-                print("What do you want to do?")
-                print("1. Add group")
-                print("2. Quit from a group")
-                print("3. See group info")
-                print("4. View group invitations")
-                print("test - admin tool")
-                self.nextStateOpt()
-                continue
-
             # view invitations
             if self.state == 'invites':
                 print('*************************************************')
@@ -389,7 +373,7 @@ class EZLedger():
                     self.nextStateOpt()
                     continue
 
-                if groupToAccept and acceptInvite(groupToAccept, self.user.credentials.get('email')):
+                if  acceptInvite(groupToAccept, self.user.credentials.get('email')):
                     print('Joined {}'.format(groupToAccept))
                 else:
                     print('Join failed')

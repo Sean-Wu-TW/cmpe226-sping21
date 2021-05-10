@@ -2,3 +2,47 @@
 2021-05-09 21:16:22,706 - User login: yyy@gmail.com yyy
 2021-05-09 21:16:22,974 - CALL FindFriends - 64
 2021-05-09 21:16:23,153 - groupList - 64
+2021-05-09 21:38:53,191 - CALL FindFriends - 66
+2021-05-09 21:38:53,423 - groupList - 66
+2021-05-09 21:38:55,575 - Return all users
+2021-05-09 21:38:57,679 - View invitations - s@gmail.com
+2021-05-09 21:39:02,945 - CALL FindFriends - 66
+2021-05-09 21:39:03,150 - groupList - 66
+2021-05-09 21:39:10,436 - User login: yyy@gmail.com yyy
+2021-05-09 21:39:10,746 - User login: yyy@gmail.com yyy
+2021-05-09 21:39:11,005 - CALL FindFriends - 64
+2021-05-09 21:39:11,249 - groupList - 64
+2021-05-09 21:39:14,313 - View invitations - yyy@gmail.com
+2021-05-09 21:39:19,792 - CALL FindFriends - 64
+2021-05-09 21:39:20,000 - groupList - 64
+2021-05-09 21:39:35,808 - Return all users
+2021-05-09 21:39:36,080 - Return all groups
+2021-05-09 21:39:36,288 - addInvite - ['zzz@gmail.com']
+2021-05-09 21:40:00,991 - groupList - 64
+2021-05-09 21:40:03,679 - Return all groups
+2021-05-09 21:40:03,911 - groupActivity - 57
+2021-05-09 21:40:10,607 - groupList - 64
+2021-05-09 21:40:12,680 - Return all groups
+2021-05-09 21:40:12,875 - groupActivity - 55
+2021-05-09 21:40:35,719 - activityDetail - 52
+2021-05-09 21:42:58,649 - CALL FindFriends - 66
+2021-05-09 21:42:58,865 - groupList - 66
+2021-05-09 21:43:14,056 - Return all users
+2021-05-09 21:43:14,343 - Return all groups
+2021-05-09 21:43:14,572 - addInvite - ['zzz@gmail.com']
+2021-05-09 21:43:21,756 - User login: zzz@gmail.com zzz
+2021-05-09 21:43:22,065 - User login: zzz@gmail.com zzz
+2021-05-09 21:43:22,360 - CALL FindFriends - 65
+2021-05-09 21:43:22,558 - groupList - 65
+2021-05-09 21:43:31,954 - Return all groups
+2021-05-09 21:43:36,936 - View invitations - zzz@gmail.com
+2021-05-09 21:43:42,849 - Return all groups
+2021-05-09 21:43:43,067 - CALL AcceptInvite - 57 zzz@gmail.com
+2021-05-09 21:43:46,625 - CALL FindFriends - 66
+2021-05-09 21:43:46,851 - groupList - 66
+2021-05-09 21:44:11,618 - Return all users
+2021-05-09 21:44:11,867 - Return all users
+2021-05-09 21:44:12,083 - Return all groups
+2021-05-09 21:44:12,340 - addExpense - 66 ['64', '65'] 600 57
+2021-05-09 21:44:15,578 - CALL FindFriends - 66
+2021-05-09 21:44:15,770 - groupList - 66
