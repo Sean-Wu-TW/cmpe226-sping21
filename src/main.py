@@ -437,12 +437,19 @@ class EZLedger():
                 print("****************** Add Expense ******************")
                 print('*************************************************') 
 
-
-                payer = input('Who is paying the bill?(user_id)\n')
-                debtor = input('Who is splitting the bill with you?(Separated by space, user_id)\n')
-                amoutToSplit = input('How much is the bill?\n')
+                groups = groupList(self.user.credentials.get('userid'))
+                print('*************** Your Groups: ***************\n')
+                for y in groups:
+                    print('groupid: {}, group name: {}'.format(y[0], y[2]))
+                
                 groupToSplit = input('Which group is splitting the bill?(group_id)\n')
                 billName = input('What is the name of the bill?\n')
+                amoutToSplit = input('How much is the bill?\n')
+                users = getGroupUsers(groupToSplit)
+                for user in users:
+                    print("username: " + user[0] + " id: " + str(user[1]))
+                payer = input('Who is paying the bill?(user_id)\n')
+                debtor = input('Who is splitting the bill with you?(Separated by space, user_id)\n')
 
                 valid = True
                 for user in debtor.split():
@@ -494,7 +501,6 @@ class EZLedger():
                 for x in groupInfo:
                     print('Group id: {}, Group name: {}'.format(x[0], x[1]))
                 res = returnDebts(self.user.credentials.get('userid'))
-                print(res)
 
                 groupToLeave = input('Which group would you like to leave?\n')
 
