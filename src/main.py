@@ -24,7 +24,7 @@ readline.set_completer(completer)
 
 class UserInfo():
 
-    def __init__(self, email='s@gmail.com', name='s', password='', userid='59'):
+    def __init__(self, email='s@gmail.com', name='s', password='', userid='66'):
 
         self.credentials = {
             'email': email,
@@ -84,6 +84,9 @@ class Splitwise():
     def checkUserExists(self, userid):
         # Check if user exists
         allUsers = returnAllUsers()
+        if not userid:
+            print('WARNING: User missing.')
+            return False
         if int(userid) not in [int(a[3]) for a in allUsers]:
             print('WARNING: User not exist.')
             return False
@@ -93,6 +96,9 @@ class Splitwise():
     def checkGroupExists(self, groupid):
         # Check if user exists
         allGroups = returnAllGroups()
+        if not groupid:
+            print('WARNING: Groupid missing.')
+            return False
         if int(groupid) not in [int(a[0]) for a in allGroups]:
             print('WARNING: Group not exist.')
             return False
@@ -103,6 +109,7 @@ class Splitwise():
         nextState = self.stateLookup.get(x)
         if nextState == 'exit':
             self.loggedIn = False
+            self.prevState == 'welcome'
         if nextState:
             self.prevState = self.state
             self.state = nextState
@@ -170,10 +177,12 @@ class Splitwise():
                 print(self.user.info())
                 res = friendList(self.user.credentials.get('userid'))
                 print('*************** Your Friends: **************\n')
-                print(res)
+                for x in res:
+                    print('userid: {}, name: {}, debt: {}'.format(x[0], x[1], x[2]))
                 groups = groupList(self.user.credentials.get('userid'))
                 print('*************** Your Groups: ***************\n')
-                print(groups)
+                for y in groups:
+                    print('groupid: {}, group name: {}'.format(y[0], y[2]))
                 self.nextStateOpt()
                 continue
 
@@ -253,7 +262,8 @@ class Splitwise():
                 print('*************************************************')
                 res = invitations(self.user.credentials.get('email'))
                 if res:
-                    print(res)
+                    for x in res:
+                        print('From group: {}'.format(x[0]))
                     self.nextStateOpt()
                     continue
                 else:
@@ -271,7 +281,8 @@ class Splitwise():
                 print('*************************************************')
 
                 res = groupList(self.user.credentials.get('userid'))
-                print(res)
+                for x in res:
+                    print('Group id: {}, Group name: {}'.format(x[0], x[2]))
 
                 self.nextStateOpt()
                 continue
@@ -282,7 +293,8 @@ class Splitwise():
                 print("***************** friendList ********************")
                 print('*************************************************')
                 res = friendList(self.user.credentials.get('userid'))
-                print(res)
+                for x in res:
+                    print('Friend id: {}, Name: {}, Debt: {}'.format(x[0], x[1], x[2]))
                 self.nextStateOpt()
                 continue
 
@@ -304,7 +316,9 @@ class Splitwise():
                 print("**************** groupActivity ******************")
                 print('*************************************************')
                 res = groupList(self.user.credentials.get('userid'))
-                print(res)
+                print('Your groups:\n')
+                for x in res:
+                    print('Group id: {}, Group name: {}'.format(x[0], x[2]))
                 if res:
                     groupToDisplay = input('Which group would you like to view?\n')
 
@@ -346,9 +360,18 @@ class Splitwise():
                 toInvite = input('Enter the email of user to invite(Email Separated by space)\n')
                 groupToInvite = input('Enter the group to invite(group_id)\n') 
 
+                allUsers = returnAllUsers()
+                if toInvite and toInvite not in [a[0] for a in allUsers]:
+                    print([a[0] for a in allUsers])
+                    print('WARNING: User not exist.')
+                    self.nextStateOpt()
+                    continue
+
+                if groupToInvite and not self.checkGroupExists(groupToInvite):
+                    continue
 
                 # Perform add 
-                if toInvite and groupToInvite and addInvite(toInvite.split(), groupToInvite):
+                if addInvite(toInvite.split(), groupToInvite):
                     print('{} invited'.format(toInvite))
                 else:
                     print('Invitation failed!')
@@ -362,6 +385,10 @@ class Splitwise():
                 print('*************************************************')
 
                 groupToAccept = input('To which group do you agree to join?\n')
+
+                if not self.checkUserExists(groupToAccept):
+                    self.nextStateOpt()
+                    continue
 
                 if groupToAccept and acceptInvite(groupToAccept, self.user.credentials.get('email')):
                     print('Joined {}'.format(groupToAccept))

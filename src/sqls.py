@@ -46,7 +46,7 @@ def insertNewUser(email, name, password):
     mydb.commit()
 
     print(mycursor.rowcount, "record inserted.")
-    logging.info('New user inserted: ', email, name, password)
+    logging.info('New user inserted: {}, {}, {}'.format(email, name, password))
 
 
 def userLogin(email, password):
@@ -56,7 +56,7 @@ def userLogin(email, password):
     res = []
     for x in mycursor:
         res.append(x)
-        
+
     logging.info('User login: {} {}'.format(email, password))
 
     # if the password is correct, return the user information. Otherwise, return empty list
