@@ -341,12 +341,9 @@ class Splitwise():
                 print('*************************************************')
                 print("******************* addInvite *******************")
                 print('*************************************************')
-                toInvite = input('Enter the email of user to invite(Separated by space)\n')
+                toInvite = input('Enter the email of user to invite(Email Separated by space)\n')
                 groupToInvite = input('Enter the group to invite(group_id)\n') 
 
-                if not self.checkUserExists(toInvite):
-                    self.nextStateOpt()
-                    continue
 
                 # Perform add 
                 if toInvite and groupToInvite and addInvite(toInvite.split(), groupToInvite):

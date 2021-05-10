@@ -1,6 +1,8 @@
 import bcrypt
 import hashlib
 import mysql.connector
+import logging
+logging.basicConfig(filename='EZledger.log', filemode='w', format='%(asctime)s - %(message)s', level=logging.INFO)
 hostname = 'database-1.c1sqwxkauabb.us-west-1.rds.amazonaws.com'
 username = 'admin'
 password = '19950808'
@@ -44,6 +46,7 @@ def insertNewUser(email, name, password):
     mydb.commit()
 
     print(mycursor.rowcount, "record inserted.")
+    logging.info('New user inserted: ', email, name, password)
 
 
 def userLogin(email, password):
@@ -54,7 +57,7 @@ def userLogin(email, password):
     for x in mycursor:
         res.append(x)
     
-
+    logging.info('User login: {} {}'.format(email, password))
     # if the password is correct, return the user information. Otherwise, return empty list
     if res and bcrypt.checkpw(password.encode('utf8'), res[0][2].encode('utf8')):
         # print('res: ', res)
@@ -64,6 +67,7 @@ def userLogin(email, password):
 
 
 def returnAllUsers():
+    logging.info('Return all users')
     mydb = mysql.connector.connect(
         host=hostname,
         user=username,
@@ -79,6 +83,7 @@ def returnAllUsers():
 
 
 def returnAllGroups():
+    logging.info('Return all groups')
     mydb = mysql.connector.connect(
         host=hostname,
         user=username,
@@ -94,6 +99,7 @@ def returnAllGroups():
 
 
 def invitations(whoami):
+    logging.info('View invitations - {}'.format(whoami))
     ''' View active invitations from the invite table '''
     mydb = mysql.connector.connect(
         host=hostname,
@@ -128,6 +134,7 @@ def returnDebts(whoami):
 
 
 def groupList(whoami):
+    logging.info('groupList - {}'.format(whoami))
     ''' This function returns the groups that I am currently in '''
     mydb = mysql.connector.connect(
         host=hostname,
@@ -201,6 +208,7 @@ def deleteInvitation(whoami):
 # display all the friends and debt
 # Display all debts from a certain user across all groups
 def friendList(whoami):
+    logging.info('CALL FindFriends - {}'.format(whoami))
     sql = "CALL FindFriends({})".format(whoami)
     mydb = mysql.connector.connect(
       host=hostname,
@@ -219,6 +227,7 @@ def friendList(whoami):
 
 # display detail for a certain friend, like how much is owed in which group
 def friendDetail(whoami, friend_id):
+    logging.info('CALL FriendDetail - {} {}'.format(whoami, friend_id))
     sql = "CALL FriendDetail({}, {})".format(whoami, friend_id)
     mydb = mysql.connector.connect(
       host=hostname,
@@ -238,6 +247,7 @@ def friendDetail(whoami, friend_id):
 
 # Create group will create a group and add the user created it to the group
 def createGroup(group_name, user_id):
+    logging.info('CALL CreateGroup - {} {}'.format(group_name, user_id))
     sql = "CALL CreateGroup(\"{}\", {});".format(group_name, user_id)
     mydb = mysql.connector.connect(
       host=hostname,
@@ -257,6 +267,7 @@ def createGroup(group_name, user_id):
 
 # This should return all the activity inside this group
 def groupActivity(group_id):
+    logging.info('groupActivity - {}'.format(group_id))
     sql = "select * from `groups` g join expense e on g.group_id = e.group_id where g.group_id = {} ORDER BY e.`time` DESC ".format(group_id)
     mydb = mysql.connector.connect(
       host=hostname,
@@ -276,6 +287,7 @@ def groupActivity(group_id):
 # {'detail': [{'owedBy': 'user1', 'amount': 10.0}, {'owedBy': 'user2', 'amount': 10.0}, {'owedBy': 'user3', 'amount': 10.0}], 'name': 'test4', 'paidBy': 'charles', 'totalAmount': 40.0}
 # detail is how much each user owes the user paid this expense. other is detail of this expense
 def activityDetail(expense_id):
+    logging.info('activityDetail - {}'.format(expense_id))
     sql = "SELECT u1.name as paid_username, e.name, e.cost as total_amount, u2.name as owe_username, se.amount FROM sub_expense se JOIN expense e on se.expense_id=e.expense_id JOIN user u1 on e.user_id = u1.user_id JOIN user u2 on se.user2 = u2.user_id WHERE e.expense_id={}".format(expense_id)
     mydb = mysql.connector.connect(
       host=hostname,
@@ -299,6 +311,7 @@ def activityDetail(expense_id):
 
 
 def settleBalance(user1, user2):
+    logging.info('settleBalance - {} {}'.format(user1, user2))
     sql = "UPDATE debt set balance = 0 where user1={} AND user2={} OR user1={} AND user2={}".format(user1, user2, user2, user1)
     mydb = mysql.connector.connect(
       host=hostname,
@@ -322,6 +335,7 @@ def settleBalance(user1, user2):
 # sample usage: addInvite(user_list=["1@user.com", "2@user.com"], group_id=51)
 # if false, abort all add invite query.
 def addInvite(user_list, group_id):
+    logging.info('addInvite - {}'.format(user_list, group_id))
     val = []
     for user in user_list:
         val.append((group_id, user))
@@ -345,6 +359,7 @@ def addInvite(user_list, group_id):
 
 # accept invite, need user's email and the group_id user invited to
 def acceptInvite(group_id, email):
+    logging.info('CALL AcceptInvite - {} {}'.format(group_id, email))
     sql = "CALL AcceptInvite({}, \"{}\")".format(group_id, str(email))
     mydb = mysql.connector.connect(
       host=hostname,
@@ -364,6 +379,7 @@ def acceptInvite(group_id, email):
 
 # decline invite, just delete that invite
 def declineInvite(group_id, email):
+    logging.info('declineInvite - {} {}'.format(group_id, email))
     sql = "DELETE FROM group_invite WHERE group_id = {} and email = \'{}\'".format(group_id, email)
     mydb = mysql.connector.connect(
       host=hostname,
@@ -382,6 +398,7 @@ def declineInvite(group_id, email):
 
 
 def updateProfile(user_id, new_profile):
+    logging.info('updateProfile - {} {}'.format(user_id, new_profile))
     sql = "UPDATE user SET `name` = '{}', `email` = '{}' WHERE `user_id`='{}'".format(new_profile['name'], new_profile['email'], user_id)
     mydb = mysql.connector.connect(
       host=hostname,
@@ -400,6 +417,7 @@ def updateProfile(user_id, new_profile):
 
 
 def changePassword(user_id, orig_password, new_password):
+    logging.info('changePassword -  {} {} {}'.format(user_id, orig_password, new_password))
     sql = "select email, name, password from user where user_id = '{}'".format(user_id)
     mydb = mysql.connector.connect(
       host=hostname,
@@ -435,6 +453,7 @@ def changePassword(user_id, orig_password, new_password):
 
 
 def addExpense(paid_by, user_list, amount, group_id, name):
+    logging.info('addExpense - {} {} {} {}'.format(paid_by, user_list, amount, group_id, name ))
     sql = "INSERT INTO expense(user_id, group_id, `name`, cost) VALUES (%s, %s, %s, %s)"
     val = (paid_by, group_id, name, amount)
     mydb = mysql.connector.connect(
