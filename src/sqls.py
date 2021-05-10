@@ -163,15 +163,27 @@ def leaveGroup(whoami, groupNo):
             database=database
         )
         mycursor = mydb.cursor()
+
+        sql = "SELECT sum(balance) FROM debt where user1={} and group_id={}".format(whoami, groupNo)
+        mycursor.execute(sql)
+
+        res = []
+        for x in mycursor:
+            res.append(x)
+
+        if res[0][0] != 0:
+            print("Balance not clear, settle up with other user before you leave!")
+            return;
+        
         mycursor.execute("DELETE FROM groups_users WHERE user_id = '{}' and group_id = '{}'".format(
             str(whoami), str(groupNo)))
-
-    except:
-        print('Something went wrong in leaveGroup')
-    finally:
         mydb.commit()
         print(mycursor.rowcount, "record(s) deleted")
         return
+
+    except:
+        print('Something went wrong in leaveGroup')
+        
 
 
 def addToGroup(whomToAdd, groupNo):
@@ -485,6 +497,43 @@ def addExpense(paid_by, user_list, amount, group_id, name):
         return True
     else:
         return False
+
+def addComment(expense_id, user_id, content):
+    mydb = mysql.connector.connect(
+        host=hostname,
+        user=username,
+        password=password,
+        database=database
+    )
+    mycursor = mydb.cursor()
+
+    sql = "INSERT INTO comment(expense_id, user_id, content) VALUES(%s, %s, %s)"
+    val = (expense_id, user_id, content)
+    mycursor.execute(sql, val)
+    if mycursor.rowcount > 0:
+        mydb.commit()
+        return True
+    else:
+        return False
+
+
+def getComment(expense_id):
+    mydb = mysql.connector.connect(
+        host=hostname,
+        user=username,
+        password=password,
+        database=database
+    )
+    mycursor = mydb.cursor()
+
+    sql = "SELECT u.name, c.content, time FROM comment c JOIN user u on c.user_id=u.user_id WHERE expense_id={}".format(expense_id)
+    mycursor.execute(sql)
+    
+    res = []
+    for x in mycursor:
+        res.append(x)
+
+    return res
 
 
 if __name__ == '__main__':

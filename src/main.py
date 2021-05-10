@@ -29,8 +29,7 @@ class UserInfo():
         self.credentials = {
             'email': email,
             'name': name,
-            'userid': userid,
-            'admin': []
+            'userid': userid
         }
     def userBuilder(self, key, value):
         ''' Builds the user info '''
@@ -514,7 +513,17 @@ class Splitwise():
                 expense = input('Which expense would you like to view?(expense_id)\n')
 
                 res = activityDetail(expense)
-                print('Your activity:\n', res)
+                print('Your activity:\n')
+                print("expense name: " + res['name'])
+                print("paid by: " + res['paidBy'])
+                print("total amount: " + str(res['totalAmount']))
+                for user in res['detail']:
+                    print("------" + user['owedBy'] + " owes " + str(user['amount']) + " to " + res['paidBy'])
+
+                comments = getComment(expense)
+                print("Comments:")
+                for comment in comments:
+                    print(comment[0] + ": " + comment[1])
                 self.nextStateOpt()
                 continue
 
@@ -526,8 +535,9 @@ class Splitwise():
                 print('*************************************************')
 
                 groupInfo = groupList(self.user.credentials.get('userid'))
-                print(groupInfo)
-                groupToLeave = input('Which group would you like to leave?\n')
+                for group in groupInfo:
+                    print("group name: " + group[2] + " | id: " + str(group[1]))
+                groupToLeave = input('Which group would you like to leave? (enter group id)\n')
                 leaveGroup(self.user.credentials.get('userid'), groupToLeave)
 
                 self.nextStateOpt()
