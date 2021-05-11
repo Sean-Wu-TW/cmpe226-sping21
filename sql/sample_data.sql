@@ -1,3 +1,4 @@
+-- # SJSU CMPE 226 Spring 2021 TEAM4
 -- 5 sample user
 INSERT INTO `user` (email, name, password) VALUES ("1@sample.com", "sample 1", "12345")
 SET @user1_id = LAST_INSERT_ID() 

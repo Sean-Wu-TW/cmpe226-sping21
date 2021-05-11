@@ -1,3 +1,4 @@
+-- # SJSU CMPE 226 Spring 2021 TEAM4
 CREATE DEFINER=`admin`@`%` PROCEDURE `splitwise`.`AcceptInvite`(IN group_id INT, IN email varchar(255))
 BEGIN
 	DECLARE id INT DEFAULT 0;

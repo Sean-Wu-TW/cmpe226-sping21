@@ -85,3 +85,64 @@
 2021-05-09 23:04:00,618 - groupList - 58
 2021-05-09 23:04:10,579 - groupList - 58
 2021-05-09 23:04:38,110 - Return all groups
+2021-05-11 08:17:32,512 - Return all users
+2021-05-11 08:17:33,127 - New user inserted: test1@gmail.com, test1, test1
+2021-05-11 08:17:44,988 - User login: test1@gmail.com test1
+2021-05-11 08:17:45,300 - User login: test1@gmail.com test1
+2021-05-11 08:17:45,558 - CALL FindFriends - 71
+2021-05-11 08:17:45,803 - groupList - 71
+2021-05-11 08:17:55,982 - User login: test2@gmail.com test2
+2021-05-11 08:18:06,648 - Return all users
+2021-05-11 08:18:07,265 - New user inserted: test2@gmail.com, test2, test2
+2021-05-11 08:18:09,384 - CALL FindFriends - 66
+2021-05-11 08:18:09,625 - groupList - 66
+2021-05-11 08:18:17,725 - User login: test 
+2021-05-11 08:18:31,696 - Return all users
+2021-05-11 08:18:44,144 - Return all users
+2021-05-11 08:18:44,718 - New user inserted: test3@gmail.com, test3, test3
+2021-05-11 08:18:52,038 - User login: test1@gmail.com test1
+2021-05-11 08:18:52,343 - User login: test1@gmail.com test1
+2021-05-11 08:18:52,601 - CALL FindFriends - 71
+2021-05-11 08:18:52,883 - groupList - 71
+2021-05-11 08:19:00,208 - CALL CreateGroup - test1's group 71
+2021-05-11 08:19:14,384 - Return all users
+2021-05-11 08:19:14,687 - addInvite - ['test2@gmail.com']
+2021-05-11 08:21:31,263 - User login: test3@gmail.com 
+2021-05-11 08:21:36,975 - User login: test1 test1
+2021-05-11 08:21:43,521 - User login: test1@gmail.com test1
+2021-05-11 08:21:43,820 - User login: test1@gmail.com test1
+2021-05-11 08:21:44,081 - CALL FindFriends - 71
+2021-05-11 08:21:44,340 - groupList - 71
+2021-05-11 08:21:59,938 - Return all users
+2021-05-11 08:22:46,889 - User login: test1@gmail.com test1
+2021-05-11 08:22:47,183 - User login: test1@gmail.com test1
+2021-05-11 08:22:47,440 - CALL FindFriends - 71
+2021-05-11 08:22:47,673 - groupList - 71
+2021-05-11 08:22:57,866 - Return all users
+2021-05-11 08:24:03,117 - User login: test1@gmail.com test1
+2021-05-11 08:24:03,423 - User login: test1@gmail.com test1
+2021-05-11 08:24:03,682 - CALL FindFriends - 71
+2021-05-11 08:24:03,932 - groupList - 71
+2021-05-11 08:24:11,913 - Return all users
+2021-05-11 08:24:12,191 - Return all groups
+2021-05-11 08:24:21,570 - Return all users
+2021-05-11 08:24:21,775 - Return all groups
+2021-05-11 08:24:47,895 - User login: test1@gmail.com test1
+2021-05-11 08:24:48,193 - User login: test1@gmail.com test1
+2021-05-11 08:24:48,449 - CALL FindFriends - 71
+2021-05-11 08:24:48,676 - groupList - 71
+2021-05-11 08:24:59,387 - Return all users
+2021-05-11 08:24:59,695 - Return all groups
+2021-05-11 08:24:59,928 - addInvite - ['test2@gmail.com']
+2021-05-11 08:25:10,819 - User login: test3@gmail.com test3
+2021-05-11 08:25:11,123 - User login: test3@gmail.com test3
+2021-05-11 08:25:11,382 - CALL FindFriends - 73
+2021-05-11 08:25:11,615 - groupList - 73
+2021-05-11 08:25:17,913 - CALL CreateGroup - test3's grouup 73
+2021-05-11 08:25:31,769 - Return all users
+2021-05-11 08:25:32,006 - Return all groups
+2021-05-11 08:25:35,265 - CALL FindFriends - 73
+2021-05-11 08:25:35,574 - groupList - 73
+2021-05-11 08:25:55,882 - Return all users
+2021-05-11 08:25:56,168 - Return all groups
+2021-05-11 08:25:56,398 - addInvite - ['test2@gmail.com']

@@ -1,3 +1,4 @@
+-- # SJSU CMPE 226 Spring 2021 TEAM4
 CREATE TABLE `user` (
   `email` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,

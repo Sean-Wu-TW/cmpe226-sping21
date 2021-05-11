@@ -1,3 +1,5 @@
+# SJSU CMPE 226 Spring 2021 TEAM4
+
 from sqls import *
 import readline
 import time
@@ -82,7 +84,7 @@ class EZLedger():
     def checkUserExists(self, userid):
         # Check if user exists
         allUsers = returnAllUsers()
-        if not userid:
+        if not userid or userid == '':
             print('WARNING: User missing.')
             return False
         if int(userid) not in [int(a[3]) for a in allUsers]:
@@ -94,7 +96,7 @@ class EZLedger():
     def checkGroupExists(self, groupid):
         # Check if user exists
         allGroups = returnAllGroups()
-        if not groupid:
+        if not groupid or groupid == '':
             print('WARNING: Groupid missing.')
             return False
         if int(groupid) not in [int(a[0]) for a in allGroups]:
@@ -350,7 +352,8 @@ class EZLedger():
                     self.nextStateOpt()
                     continue
 
-                if groupToInvite and not self.checkGroupExists(groupToInvite):
+                if not self.checkGroupExists(groupToInvite):
+                    self.nextStateOpt()
                     continue
 
                 # Perform add 

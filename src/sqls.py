@@ -1,3 +1,4 @@
+# SJSU CMPE 226 Spring 2021 TEAM4
 import bcrypt
 import hashlib
 import mysql.connector
