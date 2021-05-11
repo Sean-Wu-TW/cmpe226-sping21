@@ -6,7 +6,7 @@ import time
 
 ## Tab completer
 def completer(text, state):
-    commands = ['login', 'sign-up', 'add-to-group', 'test', 'invites', 'exit',
+    commands = ['login', 'sign-up', 'test', 'invites', 'exit',
     'viewGroup', 'help', 'leaveGroup', 'info', 'friendList', 
     'friendDetail','createGroup','groupActivity','activityDetail','settleBalance',
     'addInvite','acceptInvite','declineInvite','updateProfile','changePassword',
@@ -52,7 +52,7 @@ class EZLedger():
         self.user = None
         self.state = 'welcome'
         self.prevState = 'welcome'
-        self.help = ['login', 'sign-up', 'add-to-group', 'test', 'invites', 'exit',
+        self.help = ['login', 'sign-up', 'test', 'invites', 'exit',
     'viewGroup', 'help', 'leave-group', 'info', 'friendList', 
     'friendDetail','createGroup','groupActivity','activityDetail','settleBalance',
     'addInvite','acceptInvite','declineInvite','updateProfile','changePassword',
