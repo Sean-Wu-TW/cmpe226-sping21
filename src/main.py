@@ -26,6 +26,7 @@ readline.set_completer(completer)
 
 class UserInfo():
 
+
     def __init__(self, email='s@gmail.com', name='s', password='', userid='66'):
 
         self.credentials = {
@@ -117,7 +118,6 @@ class EZLedger():
             return False
         else:
             return True
-
     def stateChanger(self, x):
         nextState = self.stateLookup.get(x)
         if nextState == 'exit':
@@ -525,7 +525,6 @@ class EZLedger():
                     print(detail)
                 self.nextStateOpt()
                 continue
-
 
             # Leave a group, require safty check on whether I have
             # unsettled balance in that group
