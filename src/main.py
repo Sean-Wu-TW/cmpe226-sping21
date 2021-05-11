@@ -1,14 +1,16 @@
+# SJSU CMPE 226 Spring 2021 TEAM4
+
 from sqls import *
 import readline
 import time
 
 ## Tab completer
 def completer(text, state):
-    commands = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
-    'viewGroup', 'help', 'leave-group', 'info', 'friendList', 
+    commands = ['login', 'sign-up', 'add-to-group', 'test', 'invites', 'exit',
+    'viewGroup', 'help', 'leaveGroup', 'info', 'friendList', 
     'friendDetail','createGroup','groupActivity','activityDetail','settleBalance',
     'addInvite','acceptInvite','declineInvite','updateProfile','changePassword',
-    'addExpense']
+    'addExpense', 'addComment']
 
 
     options = [i for i in commands if i.startswith(text)]
@@ -24,13 +26,13 @@ readline.set_completer(completer)
 
 class UserInfo():
 
-    def __init__(self, email='s@gmail.com', name='s', password='', userid='59'):
+
+    def __init__(self, email='s@gmail.com', name='s', password='', userid='66'):
 
         self.credentials = {
             'email': email,
             'name': name,
             'userid': userid,
-            'admin': []
         }
     def userBuilder(self, key, value):
         ''' Builds the user info '''
@@ -38,20 +40,20 @@ class UserInfo():
         return self
 
     def info(self):
-        print(self.credentials)
+        return self.credentials
         # output groups that your are currently in
 
 
-class Splitwise():
+class EZLedger():
     
-    '''states: login, sign-up, test, dash, invites, dash, info, groups'''
+    '''states: login, sign-up, test, invites, info, groups'''
 
     def __init__(self):
         self.loggedIn = False
         self.user = None
         self.state = 'welcome'
         self.prevState = 'welcome'
-        self.help = ['login', 'sign-up', 'add-to-group', 'dash', 'test', 'invites', 'exit',
+        self.help = ['login', 'sign-up', 'add-to-group', 'test', 'invites', 'exit',
     'viewGroup', 'help', 'leave-group', 'info', 'friendList', 
     'friendDetail','createGroup','groupActivity','activityDetail','settleBalance',
     'addInvite','acceptInvite','declineInvite','updateProfile','changePassword',
@@ -62,10 +64,9 @@ class Splitwise():
             'login':'login',
             'sign-up':'sign-up',
             'invites':'invites',
-            'dash':'dash',
             'info':'info',
             'viewGroup':'viewGroup',
-            'leave-group':'leave-group',
+            'leaveGroup':'leaveGroup',
             'friendDetail':'friendDetail',
             'logout':'welcome',        
             'friendList':'friendList',
@@ -78,12 +79,16 @@ class Splitwise():
             'declineInvite':'declineInvite', 
             'updateProfile':'updateProfile', 
             'changePassword':'changePassword',
-            'addExpense':'addExpense' 
+            'addExpense':'addExpense',
+            'addComment':'addComment'
         }
 
     def checkUserExists(self, userid):
         # Check if user exists
         allUsers = returnAllUsers()
+        if not userid or userid == '':
+            print('WARNING: User missing.')
+            return False
         if int(userid) not in [int(a[3]) for a in allUsers]:
             print('WARNING: User not exist.')
             return False
@@ -93,16 +98,31 @@ class Splitwise():
     def checkGroupExists(self, groupid):
         # Check if user exists
         allGroups = returnAllGroups()
+        if not groupid or groupid == '':
+            print('WARNING: Groupid missing.')
+            return False
         if int(groupid) not in [int(a[0]) for a in allGroups]:
             print('WARNING: Group not exist.')
             return False
         else:
             return True
 
+    def checkExpenseExists(self, expenseid):
+        # Check if user exists
+        allExpenses = returnAllExpenses()
+        if not expenseid or expenseid == '':
+            print('WARNING: Expenseid missing.')
+            return False
+        if int(expenseid) not in [int(a[0]) for a in allExpenses]:
+            print('WARNING: Expense not exist.')
+            return False
+        else:
+            return True
     def stateChanger(self, x):
         nextState = self.stateLookup.get(x)
         if nextState == 'exit':
             self.loggedIn = False
+            self.prevState == 'welcome'
         if nextState:
             self.prevState = self.state
             self.state = nextState
@@ -122,8 +142,20 @@ class Splitwise():
             x = input("what's next? \n")
         self.stateChanger(x)
 
+    def returnCommentsOfMyGroups(self):
+        allExpenses = returnAllExpenses()
+        setOfMyGroups = set([x[0] for x in groupList(self.user.credentials.get('userid'))])
+        myGroupExpenses = [ x for x in allExpenses if x[2] in setOfMyGroups]
+        for x in myGroupExpenses:
+            print('Expenseid: {} | userid: {} | groupid: {} | Name of the Bill: {} | \
+                Cost: {} | Time of the bill: {}'.format(x[0], x[1], x[2], x[3], x[4], x[5]))
 
 
+    def friendListDisplay(self):
+        res = friendList(self.user.credentials.get('userid'))
+        print('*************** Your Friends: **************\n')
+        for x in res:
+            print('userid: {}, name: {}, debt: {}'.format(x[0], x[1], x[2]))
 
 
     def run(self):
@@ -170,10 +202,12 @@ class Splitwise():
                 print(self.user.info())
                 res = friendList(self.user.credentials.get('userid'))
                 print('*************** Your Friends: **************\n')
-                print(res)
+                for x in res:
+                    print('userid: {}, name: {}, debt: {}'.format(x[0], x[1], x[2]))
                 groups = groupList(self.user.credentials.get('userid'))
                 print('*************** Your Groups: ***************\n')
-                print(groups)
+                for y in groups:
+                    print('groupid: {}, group name: {}'.format(y[0], y[2]))
                 self.nextStateOpt()
                 continue
 
@@ -231,21 +265,6 @@ class Splitwise():
                 self.nextStateOpt()
                 continue
 
-
-            # case when user logins into the dashboard
-            if self.state == 'dash':
-                print('*************************************************')
-                print("****************** Dashbaord ********************")
-                print('*************************************************')
-                print("What do you want to do?")
-                print("1. Add group")
-                print("2. Quit from a group")
-                print("3. See group info")
-                print("4. View group invitations")
-                print("test - admin tool")
-                self.nextStateOpt()
-                continue
-
             # view invitations
             if self.state == 'invites':
                 print('*************************************************')
@@ -253,7 +272,8 @@ class Splitwise():
                 print('*************************************************')
                 res = invitations(self.user.credentials.get('email'))
                 if res:
-                    print(res)
+                    for x in res:
+                        print('From group: {}'.format(x[0]))
                     self.nextStateOpt()
                     continue
                 else:
@@ -271,7 +291,8 @@ class Splitwise():
                 print('*************************************************')
 
                 res = groupList(self.user.credentials.get('userid'))
-                print(res)
+                for x in res:
+                    print('Group id: {}, Group name: {}'.format(x[0], x[2]))
 
                 self.nextStateOpt()
                 continue
@@ -282,7 +303,8 @@ class Splitwise():
                 print("***************** friendList ********************")
                 print('*************************************************')
                 res = friendList(self.user.credentials.get('userid'))
-                print(res)
+                for x in res:
+                    print('Friend id: {}, Name: {}, Debt: {}'.format(x[0], x[1], x[2]))
                 self.nextStateOpt()
                 continue
 
@@ -304,7 +326,9 @@ class Splitwise():
                 print("**************** groupActivity ******************")
                 print('*************************************************')
                 res = groupList(self.user.credentials.get('userid'))
-                print(res)
+                print('Your groups:\n')
+                for x in res:
+                    print('Group id: {}, Group name: {}'.format(x[0], x[2]))
                 if res:
                     groupToDisplay = input('Which group would you like to view?\n')
 
@@ -325,9 +349,10 @@ class Splitwise():
                 print('*************************************************')
                 print("***************** settleBalance *****************")
                 print('*************************************************')
+                self.friendListDisplay()
                 toSettle = input('Who do you want to settle balance(userid)?\n')
 
-                if not self.checkUserExists(toInvite):
+                if not self.checkUserExists(toSettle):
                     self.nextStateOpt()
                     continue
 
@@ -343,15 +368,30 @@ class Splitwise():
                 print('*************************************************')
                 print("******************* addInvite *******************")
                 print('*************************************************')
-                toInvite = input('Enter the email of user to invite(Separated by space)\n')
+
+                # Frist, display group info
+                groups = groupList(self.user.credentials.get('userid'))
+                print('*************** Your Groups: ***************\n')
+                for y in groups:
+                    print('groupid: {}, group name: {}'.format(y[0], y[2]))
+
+                # Then choose the group to invite
+                toInvite = input('Enter the email of user to invite(Email Separated by space)\n')
                 groupToInvite = input('Enter the group to invite(group_id)\n') 
 
-                if not self.checkUserExists(toInvite):
+                allUsers = returnAllUsers()
+                if toInvite and toInvite not in [a[0] for a in allUsers]:
+                    print([a[0] for a in allUsers])
+                    print('WARNING: User not exist.')
+                    self.nextStateOpt()
+                    continue
+
+                if not self.checkGroupExists(groupToInvite):
                     self.nextStateOpt()
                     continue
 
                 # Perform add 
-                if toInvite and groupToInvite and addInvite(toInvite.split(), groupToInvite):
+                if addInvite(toInvite.split(), groupToInvite):
                     print('{} invited'.format(toInvite))
                 else:
                     print('Invitation failed!')
@@ -366,7 +406,11 @@ class Splitwise():
 
                 groupToAccept = input('To which group do you agree to join?\n')
 
-                if groupToAccept and acceptInvite(groupToAccept, self.user.credentials.get('email')):
+                if not self.checkGroupExists(groupToAccept):
+                    self.nextStateOpt()
+                    continue
+
+                if  acceptInvite(groupToAccept, self.user.credentials.get('email')):
                     print('Joined {}'.format(groupToAccept))
                 else:
                     print('Join failed')
@@ -380,7 +424,11 @@ class Splitwise():
 
                 groupToDecline = input('Which group invitation would you like to decline?\n')
 
-                if groupToDecline and declineInvite(groupToDecline, self.user.credentials.get('email')):
+                if not self.checkGroupExists(groupToDecline):
+                    self.nextStateOpt()
+                    continue
+
+                if declineInvite(groupToDecline, self.user.credentials.get('email')):
                     print('Invitation to {} declined'.format(groupToDecline))
                 else:
                     print('Failed to decline.')
@@ -426,18 +474,26 @@ class Splitwise():
                 print("****************** Add Expense ******************")
                 print('*************************************************') 
 
-
-                payer = input('Who is paying the bill?(user_id)\n')
-                debtor = input('Who is splitting the bill with you?(Separated by space, user_id)\n')
-                amoutToSplit = input('How much is the bill?\n')
+                groups = groupList(self.user.credentials.get('userid'))
+                print('*************** Your Groups: ***************\n')
+                for y in groups:
+                    print('groupid: {}, group name: {}'.format(y[0], y[2]))
+                
                 groupToSplit = input('Which group is splitting the bill?(group_id)\n')
                 billName = input('What is the name of the bill?\n')
+                amoutToSplit = input('How much is the bill?\n')
+                users = getGroupUsers(groupToSplit)
+                for user in users:
+                    print("username: " + user[0] + " id: " + str(user[1]))
+                payer = input('Who is paying the bill?(user_id)\n')
+                debtor = input('Who is splitting the bill with you?(Separated by space, user_id)\n')
 
                 valid = True
                 for user in debtor.split():
                     if not self.checkUserExists(user):
                         valid = False
                         break
+
                 if not valid:
                     self.nextStateOpt()
                     continue
@@ -470,6 +526,66 @@ class Splitwise():
                 self.nextStateOpt()
                 continue
 
+            # Leave a group, require safty check on whether I have
+            # unsettled balance in that group
+            if self.state == 'leaveGroup':
+                print('*************************************************')
+                print("***************** Leave Group *******************")
+                print('*************************************************')
+
+                groupInfo = groupList(self.user.credentials.get('userid'))
+                for x in groupInfo:
+                    print('Group id: {}, Group name: {}'.format(x[0], x[2]))
+                res = returnDebts(self.user.credentials.get('userid'))
+
+                groupToLeave = input('Which group would you like to leave?\n')
+
+                if not self.checkGroupExists(groupToLeave):
+                    self.nextStateOpt()
+                    continue
+
+                if any(True if str(x[2]) == str(groupToLeave) and int(x[3]) != 0 else False for x in res):
+                    print('Cannot leave group, you have unsettled debts.')
+                    self.nextStateOpt()
+                    continue
+                else:
+                    leaveGroup(self.user.credentials.get('userid'), groupToLeave)
+                    self.nextStateOpt()
+                    continue
+
+            if self.state == 'addComment':
+                print('*************************************************')
+                print("***************** Add Comment *******************")
+                print('*************************************************')
+
+                allExpenses = returnAllExpenses()
+                setOfMyGroups = set([x[0] for x in groupList(self.user.credentials.get('userid'))])
+                myGroupExpenses = [ x for x in allExpenses if x[2] in setOfMyGroups]
+                for x in myGroupExpenses:
+                    print('Expenseid: {} | userid: {} | groupid: {} | Name of the Bill: {} | \
+                        Cost: {} | Time of the bill: {}'.format(x[0], x[1], x[2], x[3], x[4], x[5]))
+                
+                expenseid = input('Which expense would you like to view?\n')
+
+                if not self.checkExpenseExists(expenseid):
+                    self.nextStateOpt()
+                    continue
+
+
+                content = input('Leave a comment:\n')
+
+                if addComment(expenseid, self.user.credentials.get('userid'), content):
+                    print('Comment added!')
+                else:
+                    print('Failed to comment.')
+
+                self.nextStateOpt()
+                continue
+
+
+
+
+
 
 
 
@@ -486,11 +602,24 @@ class Splitwise():
                 print('*************************************************')
                 print("**************** activityDetail *****************")
                 print('*************************************************')
-
+                self.returnCommentsOfMyGroups()
                 expense = input('Which expense would you like to view?(expense_id)\n')
 
+                if not self.checkExpenseExists(expense):
+                    self.nextStateOpt()
+                    continue
                 res = activityDetail(expense)
-                print('Your activity:\n', res)
+                print('Your activity:\n')
+                print("expense name: " + res['name'])
+                print("paid by: " + res['paidBy'])
+                print("total amount: " + str(res['totalAmount']))
+                for user in res['detail']:
+                    print("------" + user['owedBy'] + " owes " + str(user['amount']) + " to " + res['paidBy'])
+
+                comments = getComment(expense)
+                print("Comments:")
+                for comment in comments:
+                    print(comment[0] + ": " + comment[1])
                 self.nextStateOpt()
                 continue
 
@@ -502,12 +631,11 @@ class Splitwise():
                 print('*************************************************')
 
                 groupInfo = groupList(self.user.credentials.get('userid'))
-                print(groupInfo)
-                groupToLeave = input('Which group would you like to leave?\n')
+                for group in groupInfo:
+                    print("group name: " + group[2] + " | id: " + str(group[1]))
+                groupToLeave = input('Which group would you like to leave? (enter group id)\n')
                 leaveGroup(self.user.credentials.get('userid'), groupToLeave)
 
-                self.nextStateOpt()
-                continue
 
 
 
@@ -526,5 +654,5 @@ class Splitwise():
                 return False
 
 if __name__ == '__main__':
-    app = Splitwise()
+    app = EZLedger()
     app.run()

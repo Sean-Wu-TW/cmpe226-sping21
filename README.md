@@ -10,6 +10,7 @@ Go to root folder, then run`source bin/activate && pip install -r requirements.t
 
 
 - Look up expenseid before for activity detail
+- Could not update profile if you have a pending invitaion to group
 
 
 
