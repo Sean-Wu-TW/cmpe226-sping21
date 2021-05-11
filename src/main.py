@@ -10,7 +10,7 @@ def completer(text, state):
     'viewGroup', 'help', 'leaveGroup', 'info', 'friendList', 
     'friendDetail','createGroup','groupActivity','activityDetail','settleBalance',
     'addInvite','acceptInvite','declineInvite','updateProfile','changePassword',
-    'addExpense']
+    'addExpense', 'addComment']
 
 
     options = [i for i in commands if i.startswith(text)]
@@ -31,7 +31,7 @@ class UserInfo():
         self.credentials = {
             'email': email,
             'name': name,
-            'userid': userid
+            'userid': userid,
         }
     def userBuilder(self, key, value):
         ''' Builds the user info '''
@@ -78,7 +78,8 @@ class EZLedger():
             'declineInvite':'declineInvite', 
             'updateProfile':'updateProfile', 
             'changePassword':'changePassword',
-            'addExpense':'addExpense' 
+            'addExpense':'addExpense',
+            'addComment':'addComment'
         }
 
     def checkUserExists(self, userid):
@@ -101,6 +102,18 @@ class EZLedger():
             return False
         if int(groupid) not in [int(a[0]) for a in allGroups]:
             print('WARNING: Group not exist.')
+            return False
+        else:
+            return True
+
+    def checkExpenseExists(self, expenseid):
+        # Check if user exists
+        allExpenses = returnAllExpenses()
+        if not expenseid or expenseid == '':
+            print('WARNING: Expenseid missing.')
+            return False
+        if int(expenseid) not in [int(a[0]) for a in allExpenses]:
+            print('WARNING: Expense not exist.')
             return False
         else:
             return True
@@ -129,6 +142,13 @@ class EZLedger():
             x = input("what's next? \n")
         self.stateChanger(x)
 
+    def returnCommentsOfMyGroups(self):
+        allExpenses = returnAllExpenses()
+        setOfMyGroups = set([x[0] for x in groupList(self.user.credentials.get('userid'))])
+        myGroupExpenses = [ x for x in allExpenses if x[2] in setOfMyGroups]
+        for x in myGroupExpenses:
+            print('Expenseid: {} | userid: {} | groupid: {} | Name of the Bill: {} | \
+                Cost: {} | Time of the bill: {}'.format(x[0], x[1], x[2], x[3], x[4], x[5]))
 
 
 
@@ -342,6 +362,14 @@ class EZLedger():
                 print('*************************************************')
                 print("******************* addInvite *******************")
                 print('*************************************************')
+
+                # Frist, display group info
+                groups = groupList(self.user.credentials.get('userid'))
+                print('*************** Your Groups: ***************\n')
+                for y in groups:
+                    print('groupid: {}, group name: {}'.format(y[0], y[2]))
+
+                # Then choose the group to invite
                 toInvite = input('Enter the email of user to invite(Email Separated by space)\n')
                 groupToInvite = input('Enter the group to invite(group_id)\n') 
 
@@ -520,6 +548,40 @@ class EZLedger():
                     self.nextStateOpt()
                     continue
 
+            if self.state == 'addComment':
+                print('*************************************************')
+                print("***************** Add Comment *******************")
+                print('*************************************************')
+
+                allExpenses = returnAllExpenses()
+                setOfMyGroups = set([x[0] for x in groupList(self.user.credentials.get('userid'))])
+                myGroupExpenses = [ x for x in allExpenses if x[2] in setOfMyGroups]
+                for x in myGroupExpenses:
+                    print('Expenseid: {} | userid: {} | groupid: {} | Name of the Bill: {} | \
+                        Cost: {} | Time of the bill: {}'.format(x[0], x[1], x[2], x[3], x[4], x[5]))
+                
+                expenseid = input('Which expense would you like to view?\n')
+
+                if not self.checkExpenseExists(expenseid):
+                    self.nextStateOpt()
+                    continue
+
+
+                content = input('Leave a comment:\n')
+
+                if addComment(expenseid, self.user.credentials.get('userid'), content):
+                    print('Comment added!')
+                else:
+                    print('Failed to comment.')
+
+                self.nextStateOpt()
+                continue
+
+
+
+
+
+
 
 
             ##################################################################
@@ -535,9 +597,12 @@ class EZLedger():
                 print('*************************************************')
                 print("**************** activityDetail *****************")
                 print('*************************************************')
-
+                self.returnCommentsOfMyGroups()
                 expense = input('Which expense would you like to view?(expense_id)\n')
 
+                if not self.checkExpenseExists(expense):
+                    self.nextStateOpt()
+                    continue
                 res = activityDetail(expense)
                 print('Your activity:\n')
                 print("expense name: " + res['name'])

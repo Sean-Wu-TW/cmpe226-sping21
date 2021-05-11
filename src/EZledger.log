@@ -146,3 +146,102 @@
 2021-05-11 08:25:55,882 - Return all users
 2021-05-11 08:25:56,168 - Return all groups
 2021-05-11 08:25:56,398 - addInvite - ['test2@gmail.com']
+2021-05-11 08:31:21,050 - User login: test2 
+2021-05-11 08:31:27,592 - Return all users
+2021-05-11 08:31:36,020 - User login: test2@gmail.com test2
+2021-05-11 08:31:36,329 - User login: test2@gmail.com test2
+2021-05-11 08:31:36,585 - CALL FindFriends - 72
+2021-05-11 08:31:36,846 - groupList - 72
+2021-05-11 08:31:42,372 - View invitations - test2@gmail.com
+2021-05-11 08:31:53,111 - Return all groups
+2021-05-11 08:31:53,384 - CALL AcceptInvite - 60 test2@gmail.com
+2021-05-11 08:31:57,494 - View invitations - test2@gmail.com
+2021-05-11 08:32:02,055 - Return all groups
+2021-05-11 08:32:02,270 - declineInvite - 61 test2@gmail.com
+2021-05-11 08:32:07,133 - groupList - 72
+2021-05-11 08:32:15,255 - CALL FindFriends - 72
+2021-05-11 08:32:28,446 - groupList - 72
+2021-05-11 08:32:48,750 - CALL FindFriends - 72
+2021-05-11 08:32:49,009 - groupList - 72
+2021-05-11 08:33:03,601 - updateProfile - 72 {'name': 'test22', 'email': 'test2@hotmail.com'}
+2021-05-11 08:33:08,198 - CALL FindFriends - 72
+2021-05-11 08:33:08,453 - groupList - 72
+2021-05-11 08:33:26,214 - updateProfile - 72 {'name': 'test2', 'email': 'test2@gmail.com'}
+2021-05-11 08:33:51,459 - User login: test3@gnail.com test3
+2021-05-11 08:34:00,049 - User login: test3@gmail.com test3
+2021-05-11 08:34:00,358 - User login: test3@gmail.com test3
+2021-05-11 08:34:00,615 - CALL FindFriends - 73
+2021-05-11 08:34:00,902 - groupList - 73
+2021-05-11 08:34:02,527 - View invitations - test3@gmail.com
+2021-05-11 08:34:11,582 - groupList - 73
+2021-05-11 08:34:24,726 - Return all users
+2021-05-11 08:34:24,988 - Return all groups
+2021-05-11 08:34:25,208 - addInvite - ['test1@gmail.com']
+2021-05-11 08:34:34,704 - User login: test1@gmail.com test1
+2021-05-11 08:34:35,013 - User login: test1@gmail.com test1
+2021-05-11 08:34:35,273 - CALL FindFriends - 71
+2021-05-11 08:34:35,518 - groupList - 71
+2021-05-11 08:34:37,935 - View invitations - test1@gmail.com
+2021-05-11 08:34:53,558 - updateProfile - 71 {'name': 'test1haha', 'email': 'test11@gmail.com'}
+2021-05-11 08:44:10,844 - User login: test1@gmail.com test1
+2021-05-11 08:44:11,149 - User login: test1@gmail.com test1
+2021-05-11 08:44:11,408 - CALL FindFriends - 71
+2021-05-11 08:44:11,669 - groupList - 71
+2021-05-11 08:44:16,034 - groupList - 71
+2021-05-11 08:44:46,211 - Return all users
+2021-05-11 08:44:47,332 - Return all groups
+2021-05-11 08:44:48,051 - addExpense - 71 ['72'] 126 60
+2021-05-11 08:45:02,083 - activityDetail - 
+2021-05-11 08:46:50,228 - User login: test1@gmail.com test1
+2021-05-11 08:46:50,538 - User login: test1@gmail.com test1
+2021-05-11 08:46:50,796 - CALL FindFriends - 71
+2021-05-11 08:46:51,031 - groupList - 71
+2021-05-11 08:46:52,987 - groupList - 71
+2021-05-11 08:46:56,043 - Return all groups
+2021-05-11 08:46:56,302 - groupActivity - 60
+2021-05-11 08:47:10,283 - activityDetail - 57
+2021-05-11 08:51:56,502 - User login: test1@gmail.com test1
+2021-05-11 08:51:56,823 - User login: test1@gmail.com test1
+2021-05-11 08:51:57,081 - CALL FindFriends - 71
+2021-05-11 08:51:57,294 - groupList - 71
+2021-05-11 08:52:07,196 - activityDetail - 57
+2021-05-11 08:52:22,205 - groupList - 71
+2021-05-11 08:52:24,596 - Return all groups
+2021-05-11 08:52:24,818 - groupActivity - 60
+2021-05-11 08:52:34,426 - activityDetail - 57
+2021-05-11 08:57:21,159 - User login: test1@gmail.com test1
+2021-05-11 08:57:21,469 - User login: test1@gmail.com test1
+2021-05-11 08:57:21,729 - CALL FindFriends - 71
+2021-05-11 08:57:21,951 - groupList - 71
+2021-05-11 09:01:04,437 - User login: test1@gmail.com test1
+2021-05-11 09:01:04,741 - User login: test1@gmail.com test1
+2021-05-11 09:01:04,999 - CALL FindFriends - 71
+2021-05-11 09:01:05,240 - groupList - 71
+2021-05-11 09:01:08,249 - groupList - 71
+2021-05-11 09:01:40,250 - CALL FindFriends - 66
+2021-05-11 09:01:40,518 - groupList - 66
+2021-05-11 09:01:50,018 - groupList - 66
+2021-05-11 09:01:55,530 - Return all groups
+2021-05-11 09:01:55,823 - groupActivity - 57
+2021-05-11 09:02:03,759 - groupList - 66
+2021-05-11 09:02:52,354 - CALL FindFriends - 66
+2021-05-11 09:02:53,178 - groupList - 66
+2021-05-11 09:02:56,153 - groupList - 66
+2021-05-11 09:03:06,962 - CALL FindFriends - 66
+2021-05-11 09:03:07,255 - groupList - 66
+2021-05-11 09:03:10,023 - groupList - 66
+2021-05-11 09:08:38,216 - CALL FindFriends - 66
+2021-05-11 09:08:38,454 - groupList - 66
+2021-05-11 09:08:42,880 - groupList - 66
+2021-05-11 09:08:45,472 - Return all groups
+2021-05-11 09:08:45,714 - groupActivity - 57
+2021-05-11 09:08:52,448 - groupList - 66
+2021-05-11 09:09:43,157 - activityDetail - 55
+2021-05-11 09:12:20,751 - CALL FindFriends - 66
+2021-05-11 09:12:20,994 - groupList - 66
+2021-05-11 09:12:38,016 - CALL FindFriends - 66
+2021-05-11 09:12:38,265 - groupList - 66
+2021-05-11 09:12:49,319 - CALL FindFriends - 66
+2021-05-11 09:12:49,603 - groupList - 66
+2021-05-11 09:12:52,915 - groupList - 66
+2021-05-11 09:13:48,236 - activityDetail - 55

@@ -554,14 +554,25 @@ def getGroupUsers(group_id):
 
     return res
 
+def returnAllExpenses():
+    mydb = mysql.connector.connect(
+        host=hostname,
+        user=username,
+        password=password,
+        database=database
+    )
+    mycursor = mydb.cursor()
+
+    sql = 'SELECT * FROM expense'
+    mycursor.execute(sql)
+    return [x for x in mycursor]
+
+
 
 if __name__ == '__main__':
 
-    x = input('Enter a list\n')
-    if x:
-        print(x)
-    else:
-        print('Nothing')
+    a = returnAllExpenses()
+    print(a)
 
 
 
