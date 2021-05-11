@@ -151,6 +151,11 @@ class EZLedger():
                 Cost: {} | Time of the bill: {}'.format(x[0], x[1], x[2], x[3], x[4], x[5]))
 
 
+    def friendListDisplay(self):
+        res = friendList(self.user.credentials.get('userid'))
+        print('*************** Your Friends: **************\n')
+        for x in res:
+            print('userid: {}, name: {}, debt: {}'.format(x[0], x[1], x[2]))
 
 
     def run(self):
@@ -344,6 +349,7 @@ class EZLedger():
                 print('*************************************************')
                 print("***************** settleBalance *****************")
                 print('*************************************************')
+                self.friendListDisplay()
                 toSettle = input('Who do you want to settle balance(userid)?\n')
 
                 if not self.checkUserExists(toSettle):
@@ -530,7 +536,7 @@ class EZLedger():
 
                 groupInfo = groupList(self.user.credentials.get('userid'))
                 for x in groupInfo:
-                    print('Group id: {}, Group name: {}'.format(x[0], x[1]))
+                    print('Group id: {}, Group name: {}'.format(x[0], x[2]))
                 res = returnDebts(self.user.credentials.get('userid'))
 
                 groupToLeave = input('Which group would you like to leave?\n')
