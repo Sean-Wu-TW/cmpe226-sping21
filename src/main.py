@@ -142,7 +142,7 @@ class EZLedger():
             x = input("what's next? \n")
         self.stateChanger(x)
 
-    def returnCommentsOfMyGroups(self):
+    def printCommentsOfMyGroups(self):
         allExpenses = returnAllExpenses()
         setOfMyGroups = set([x[0] for x in groupList(self.user.credentials.get('userid'))])
         myGroupExpenses = [ x for x in allExpenses if x[2] in setOfMyGroups]
@@ -331,8 +331,6 @@ class EZLedger():
                     print('Group id: {}, Group name: {}'.format(x[0], x[2]))
                 if res:
                     groupToDisplay = input('Which group would you like to view?\n')
-
-
                     if not self.checkGroupExists(groupToDisplay):
                         self.nextStateOpt()
                         continue
@@ -515,6 +513,7 @@ class EZLedger():
                 print('*************************************************')
                 print("***************** Friend Detail *****************")
                 print('*************************************************') 
+                self.friendListDisplay()
 
                 friendToView = input('Which friend would you like to view?(user_id)\n')
                 if not self.checkUserExists(friendToView):
@@ -526,6 +525,10 @@ class EZLedger():
                 self.nextStateOpt()
                 continue
 
+                for d in detail:
+                    print('Friend Name: {} | Group Name: {} | Debt: {}'.format(d[0], d[1], d[2]))
+                self.nextStateOpt()
+                continue
 
             # Leave a group, require safty check on whether I have
             # unsettled balance in that group
@@ -603,7 +606,7 @@ class EZLedger():
                 print('*************************************************')
                 print("**************** activityDetail *****************")
                 print('*************************************************')
-                self.returnCommentsOfMyGroups()
+                self.printCommentsOfMyGroups()
                 expense = input('Which expense would you like to view?(expense_id)\n')
 
                 if not self.checkExpenseExists(expense):
