@@ -6,7 +6,7 @@ import time
 
 ## Tab completer
 def completer(text, state):
-    commands = ['login', 'sign-up', 'add-to-group', 'test', 'invites', 'exit',
+    commands = ['login', 'sign-up', 'test', 'invites', 'exit',
     'viewGroup', 'help', 'leaveGroup', 'info', 'friendList', 
     'friendDetail','createGroup','groupActivity','activityDetail','settleBalance',
     'addInvite','acceptInvite','declineInvite','updateProfile','changePassword',
@@ -25,7 +25,6 @@ readline.set_completer(completer)
 
 
 class UserInfo():
-
 
     def __init__(self, email='s@gmail.com', name='s', password='', userid='66'):
 
@@ -53,8 +52,8 @@ class EZLedger():
         self.user = None
         self.state = 'welcome'
         self.prevState = 'welcome'
-        self.help = ['login', 'sign-up', 'add-to-group', 'test', 'invites', 'exit',
-    'viewGroup', 'help', 'leave-group', 'info', 'friendList', 
+        self.help = ['login', 'sign-up', 'test', 'invites', 'exit',
+    'viewGroup', 'help', 'info', 'friendList', 
     'friendDetail','createGroup','groupActivity','activityDetail','settleBalance',
     'addInvite','acceptInvite','declineInvite','updateProfile','changePassword',
     'addExpense']
@@ -118,6 +117,7 @@ class EZLedger():
             return False
         else:
             return True
+
     def stateChanger(self, x):
         nextState = self.stateLookup.get(x)
         if nextState == 'exit':
@@ -142,7 +142,7 @@ class EZLedger():
             x = input("what's next? \n")
         self.stateChanger(x)
 
-    def returnCommentsOfMyGroups(self):
+    def printCommentsOfMyGroups(self):
         allExpenses = returnAllExpenses()
         setOfMyGroups = set([x[0] for x in groupList(self.user.credentials.get('userid'))])
         myGroupExpenses = [ x for x in allExpenses if x[2] in setOfMyGroups]
@@ -331,8 +331,6 @@ class EZLedger():
                     print('Group id: {}, Group name: {}'.format(x[0], x[2]))
                 if res:
                     groupToDisplay = input('Which group would you like to view?\n')
-
-
                     if not self.checkGroupExists(groupToDisplay):
                         self.nextStateOpt()
                         continue
@@ -515,6 +513,7 @@ class EZLedger():
                 print('*************************************************')
                 print("***************** Friend Detail *****************")
                 print('*************************************************') 
+                self.friendListDisplay()
 
                 friendToView = input('Which friend would you like to view?(user_id)\n')
                 if not self.checkUserExists(friendToView):
@@ -522,9 +521,11 @@ class EZLedger():
                     continue
                 if friendToView:
                     detail = friendDetail(self.user.credentials.get('userid'), friendToView)
-                    print(detail)
+                    for d in detail:
+                        print('Friend Name: {} | Group Name: {} | Debt: {}'.format(d[0], d[1], d[2]))
                 self.nextStateOpt()
                 continue
+
 
             # Leave a group, require safty check on whether I have
             # unsettled balance in that group
@@ -602,7 +603,7 @@ class EZLedger():
                 print('*************************************************')
                 print("**************** activityDetail *****************")
                 print('*************************************************')
-                self.returnCommentsOfMyGroups()
+                self.printCommentsOfMyGroups()
                 expense = input('Which expense would you like to view?(expense_id)\n')
 
                 if not self.checkExpenseExists(expense):
