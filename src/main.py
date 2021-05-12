@@ -26,10 +26,6 @@ readline.set_completer(completer)
 
 class UserInfo():
 
-<<<<<<< HEAD
-=======
-
->>>>>>> fc17a4b461776cff258d7e0d2f88dc2ea49c057e
     def __init__(self, email='s@gmail.com', name='s', password='', userid='66'):
 
         self.credentials = {
@@ -121,10 +117,7 @@ class EZLedger():
             return False
         else:
             return True
-<<<<<<< HEAD
 
-=======
->>>>>>> fc17a4b461776cff258d7e0d2f88dc2ea49c057e
     def stateChanger(self, x):
         nextState = self.stateLookup.get(x)
         if nextState == 'exit':
@@ -528,18 +521,12 @@ class EZLedger():
                     continue
                 if friendToView:
                     detail = friendDetail(self.user.credentials.get('userid'), friendToView)
-                    print(detail)
+                    for d in detail:
+                        print('Friend Name: {} | Group Name: {} | Debt: {}'.format(d[0], d[1], d[2]))
                 self.nextStateOpt()
                 continue
 
-<<<<<<< HEAD
-                for d in detail:
-                    print('Friend Name: {} | Group Name: {} | Debt: {}'.format(d[0], d[1], d[2]))
-                self.nextStateOpt()
-                continue
 
-=======
->>>>>>> fc17a4b461776cff258d7e0d2f88dc2ea49c057e
             # Leave a group, require safty check on whether I have
             # unsettled balance in that group
             if self.state == 'leaveGroup':
