@@ -53,7 +53,7 @@ class EZLedger():
         self.state = 'welcome'
         self.prevState = 'welcome'
         self.help = ['login', 'sign-up', 'test', 'invites', 'exit',
-    'viewGroup', 'help', 'leave-group', 'info', 'friendList', 
+    'viewGroup', 'help', 'info', 'friendList', 
     'friendDetail','createGroup','groupActivity','activityDetail','settleBalance',
     'addInvite','acceptInvite','declineInvite','updateProfile','changePassword',
     'addExpense']
@@ -603,11 +603,7 @@ class EZLedger():
                 print('*************************************************')
                 print("**************** activityDetail *****************")
                 print('*************************************************')
-<<<<<<< HEAD
                 self.printCommentsOfMyGroups()
-=======
-                self.returnCommentsOfMyGroups()
->>>>>>> fc17a4b461776cff258d7e0d2f88dc2ea49c057e
                 expense = input('Which expense would you like to view?(expense_id)\n')
 
                 if not self.checkExpenseExists(expense):
